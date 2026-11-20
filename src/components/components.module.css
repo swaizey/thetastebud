@@ -181,6 +181,16 @@
     padding: 0 1rem;
   }
 
+  .headerHidden .navigationPanel[aria-hidden='true'] {
+    display: none;
+  }
+
+  .headerScrolled {
+    background-color: rgb(18 11 8 / 92%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   .brand {
     width: 92px;
   }

@@ -144,6 +144,23 @@
   margin-bottom: 0.8rem;
 }
 
+.topbarTitle {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.topbarTitle > div {
+  min-width: 0;
+}
+
+.sidebarToggle,
+.sidebarClose,
+.sidebarBackdrop {
+  display: none;
+}
+
 .topbar h1 {
   color: #2c171c;
   font-size: clamp(1.45rem, 2.4vw, 1.9rem);
@@ -197,6 +214,10 @@
   color: #3e2528;
   cursor: pointer;
   font-size: 0.76rem;
+}
+
+.profileName {
+  display: inline;
 }
 
 .profileButton > .icon {
@@ -759,37 +780,120 @@
   }
 
   .sidebar {
-    position: static;
-    min-height: 0;
-    padding: 0.45rem 0.65rem 0.55rem;
-    border-right: 0;
-    border-bottom: 1px solid #f3d9cf;
+    position: fixed;
+    z-index: 40;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(82vw, 280px);
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 1rem 0.85rem;
+    overflow-y: auto;
+    border-right: 1px solid #f3d9cf;
+    background: #fff8f4;
+    box-shadow: 12px 0 34px rgb(75 29 11 / 15%);
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 180ms ease, visibility 180ms ease;
   }
 
-  .brand,
-  .sidebarArt,
-  .logout {
+  .sidebarOpen {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .brand {
+    display: flex;
+    min-height: 86px;
+    margin-bottom: 0.65rem;
+  }
+
+  .brand img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .sidebarClose {
+    position: absolute;
+    top: 1rem;
+    right: 0.85rem;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid #f1d8ce;
+    border-radius: 10px;
+    background: #fffaf8;
+    color: #713a2e;
+    cursor: pointer;
+  }
+
+  .sidebarClose .icon {
+    width: 19px;
+    height: 19px;
+  }
+
+  .sidebarArt {
     display: none;
   }
 
   .sidebarNav {
-    display: flex;
-    gap: 0.35rem;
-    overflow-x: auto;
-    scrollbar-width: thin;
+    display: grid;
+    gap: 0.3rem;
+    overflow: visible;
   }
 
   .navItem {
-    flex: 0 0 auto;
-    gap: 0.35rem;
-    min-height: 40px;
-    padding: 0.45rem 0.65rem;
-    font-size: 0.72rem;
+    gap: 0.65rem;
+    min-height: 43px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.82rem;
   }
 
   .navItem .icon {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .logout {
+    display: flex;
+    margin-top: auto;
+  }
+
+  .sidebarBackdrop {
+    position: fixed;
+    z-index: 35;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: rgb(37 19 22 / 38%);
+    cursor: pointer;
+  }
+
+  .sidebarToggle {
+    display: grid;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 1px solid #f1d8ce;
+    border-radius: 11px;
+    background: #fffaf8;
+    color: #713a2e;
+    cursor: pointer;
+  }
+
+  .sidebarToggle .icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .topbarTitle {
+    flex: 1;
   }
 
   .mainContent {
@@ -802,11 +906,15 @@
   }
 
   .topbar h1 {
-    font-size: 1.35rem;
+    font-size: clamp(1.05rem, 5vw, 1.35rem);
   }
 
   .topbar p {
     font-size: 0.75rem;
+  }
+
+  .profileName {
+    display: none;
   }
 
   .profileButton {
@@ -819,6 +927,10 @@
   .profileAvatar {
     width: 26px;
     height: 26px;
+  }
+
+  .pageTitleWithBack {
+    gap: 0.5rem;
   }
 
   .metrics {
@@ -946,9 +1058,16 @@
   }
 }
 
+@media (max-width: 380px) {
+  .topbar p {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .navItem,
-  .bar {
+  .bar,
+  .sidebar {
     transition: none;
   }
 }

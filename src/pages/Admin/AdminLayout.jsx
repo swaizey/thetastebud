@@ -16,6 +16,7 @@ const navigation = [
 function AdminIcon({ name }) {
   const paths = {
     home: <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+    navToggle: <path d="M4 6h16M4 12h16M4 18h16" />,
     users: <><circle cx="9" cy="8" r="3" /><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.2a3 3 0 0 1 0 5.6M18 14a5 5 0 0 1 3 4.5V20" /></>,
     cart: <><path d="M3 4h2l2.2 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.4L22 8H6" /><circle cx="10" cy="21" r="1" /><circle cx="18" cy="21" r="1" /></>,
     menu: <><path d="M3 11h18l-2 9H5zM5 11l2-7h10l2 7M8 15h.01M12 15h.01M16 15h.01" /></>,
@@ -25,6 +26,7 @@ function AdminIcon({ name }) {
     user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
     back: <path d="M19 12H5m7 7-7-7 7-7" />,
     chevron: <path d="m8 10 4 4 4-4" />,
+    close: <path d="m6 6 12 12M18 6 6 18" />,
     logout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" /></>,
   }
 
@@ -38,6 +40,7 @@ function AdminIcon({ name }) {
 function AdminLayout() {
   const { pathname } = useLocation()
   const [profileOpen, setProfileOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const isUserProfilePage = pathname.startsWith('/admin/users/')
   const isOrderDetailsPage = pathname.startsWith('/admin/orders/')
   const isMessageInboxPage = pathname === '/admin/messages'
@@ -84,10 +87,23 @@ function AdminLayout() {
 
   return (
     <div className={styles.dashboard}>
-      <aside className={styles.sidebar}>
-        <Link className={styles.brand} to="/" aria-label="The Taste Bud home">
+      <aside
+        className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}
+        id="admin-sidebar"
+        aria-label="Admin sidebar"
+        aria-hidden={!sidebarOpen && window.matchMedia('(max-width: 650px)').matches}
+      >
+        <Link className={styles.brand} to="/" aria-label="The Taste Bud home" onClick={() => setSidebarOpen(false)}>
           <img src={logo} alt="The Taste Bud By Joy" />
         </Link>
+        <button
+          className={styles.sidebarClose}
+          type="button"
+          aria-label="Close admin navigation"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <AdminIcon name="close" />
+        </button>
         <nav className={styles.sidebarNav} aria-label="Admin navigation">
           {navigation.map(({ label, icon, to }) => {
             const isActive = label === 'Dashboard'
@@ -107,6 +123,7 @@ function AdminLayout() {
                 key={label}
                 to={to}
                 aria-current={isActive ? 'page' : undefined}
+                onClick={() => setSidebarOpen(false)}
               >
                 <AdminIcon name={icon} />
                 <span>{label}</span>
@@ -117,15 +134,33 @@ function AdminLayout() {
         <div className={styles.sidebarArt} aria-hidden="true">
           <AdminIcon name="menu" />
         </div>
-        <Link className={styles.logout} to="/">
+        <Link className={styles.logout} to="/" onClick={() => setSidebarOpen(false)}>
           <AdminIcon name="logout" />
           <span>Logout</span>
         </Link>
       </aside>
+      {sidebarOpen && (
+        <button
+          className={styles.sidebarBackdrop}
+          type="button"
+          aria-label="Close admin navigation"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       <section className={styles.mainContent}>
         <header className={styles.topbar}>
-          <div>
+          <div className={styles.topbarTitle}>
+            <button
+              className={styles.sidebarToggle}
+              type="button"
+              aria-label={sidebarOpen ? 'Close admin navigation' : 'Open admin navigation'}
+              aria-expanded={sidebarOpen}
+              aria-controls="admin-sidebar"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <AdminIcon name="navToggle" />
+            </button>
             <div className={isOrderDetailsPage || isMessageThreadPage ? styles.pageTitleWithBack : undefined}>
               {(isOrderDetailsPage || isMessageThreadPage) && (
                 <Link
@@ -148,10 +183,11 @@ function AdminLayout() {
               id="admin-account"
               type="button"
               aria-expanded={profileOpen}
+              aria-label="Admin account"
               onClick={() => setProfileOpen(!profileOpen)}
             >
               <span className={styles.profileAvatar}><AdminIcon name="user" /></span>
-              Admin
+              <span className={styles.profileName}>Admin</span>
               <AdminIcon name="chevron" />
             </button>
             {profileOpen && (

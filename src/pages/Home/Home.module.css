@@ -781,6 +781,7 @@
   .aboutVisual {
     width: min(86vw, 320px);
     height: 245px;
+    overflow-x: clip;
   }
 
   .aboutHighlights {

@@ -101,7 +101,10 @@ function Nav() {
         aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={menuOpen}
         aria-controls="primary-navigation"
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={() => {
+          setMenuOpen(!menuOpen)
+          setNavHidden(false)
+        }}
       >
         <svg aria-hidden="true" viewBox="0 0 24 24">
           {menuOpen ? (
