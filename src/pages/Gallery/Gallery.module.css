@@ -1,0 +1,364 @@
+.page {
+  min-height: 100vh;
+  padding-bottom: 1.5rem;
+  background: #fff3e8;
+  color: #28170f;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 95vh;
+  margin-top: calc(-1 * var(--site-nav-height));
+  padding-top: var(--site-nav-height);
+  overflow: hidden;
+  background: #190e0a;
+  color: #fff7f0;
+}
+
+.heroImage,
+.heroOverlay {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heroImage {
+  object-fit: cover;
+  object-position: 63% 55%;
+}
+
+.heroOverlay {
+  background:
+    linear-gradient(90deg, rgb(17 8 5 / 93%) 0%, rgb(17 8 5 / 78%) 35%, rgb(17 8 5 / 12%) 80%),
+    linear-gradient(0deg, rgb(17 8 5 / 24%), transparent 58%);
+}
+
+.heroContent {
+  width: min(calc(100% - 5rem), 1360px);
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.heroEyebrow,
+.sectionEyebrow {
+  margin-bottom: 0.45rem;
+  color: #ffb092;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.19em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.heroContent h1 {
+  max-width: 600px;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  letter-spacing: -0.05em;
+  line-height: 0.88;
+}
+
+.heroContent h1 span {
+  color: #ffb092;
+  font-style: italic;
+}
+
+.heroContent > p:last-child {
+  max-width: 330px;
+  margin-top: 0.75rem;
+  color: rgb(255 247 240 / 91%);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.heroWave {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 28px;
+  background: #ff9878;
+  clip-path: polygon(0 4%, 9% 82%, 25% 100%, 45% 87%, 59% 46%, 72% 15%, 85% 4%, 100% 15%, 100% 100%, 0 100%);
+}
+
+.gallerySection {
+  width: min(calc(100% - 3rem), 1320px);
+  margin: 0 auto 1.35rem;
+}
+
+.categoryBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 70px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.categoryButton {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0.55rem 1.15rem;
+  border: 1px solid rgb(255 152 120 / 34%);
+  border-radius: 999px;
+  background: #fff0e3;
+  color: #321b12;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.categoryButton:hover,
+.categoryButton:focus-visible {
+  transform: translateY(-1px);
+  border-color: #ff9878;
+}
+
+.categoryActive {
+  border-color: #ff9878;
+  background: linear-gradient(105deg, #ff9878, #ffb092);
+  color: #28170f;
+  box-shadow: 0 4px 10px rgb(128 55 29 / 16%);
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.photoCard {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  height: clamp(165px, 22vw, 250px);
+  overflow: hidden;
+  border-radius: 15px;
+  background: #ead4c4;
+  box-shadow: 0 4px 12px rgb(82 38 18 / 10%);
+}
+
+.photoCard::after {
+  position: absolute;
+  z-index: 0;
+  inset: 50% 0 0;
+  background: linear-gradient(transparent, rgb(20 9 5 / 65%));
+  content: '';
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.photoCard img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 240ms ease;
+}
+
+.photoCard:hover img {
+  transform: scale(1.045);
+}
+
+.photoCard:hover::after,
+.photoCard:focus-within::after {
+  opacity: 1;
+}
+
+.photoCard figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 0.75rem;
+  bottom: 0.65rem;
+  left: 0.75rem;
+  color: #fff7f0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.photoCard:hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.finalCta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: min(calc(100% - 2rem), 1320px);
+  min-height: 110px;
+  margin: 0 auto;
+  padding: 0.85rem clamp(1rem, 4vw, 2.5rem);
+  border-radius: 23px;
+  background:
+    radial-gradient(ellipse at 2% 55%, rgb(255 152 120 / 11%), transparent 34%),
+    linear-gradient(100deg, #1d0e08, #2b130b);
+  color: #fff3e8;
+}
+
+.ctaIcon {
+  display: grid;
+  width: 78px;
+  height: 72px;
+  place-items: center;
+  color: #ffb092;
+}
+
+.ctaIcon svg {
+  width: 68px;
+  height: 68px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.ctaCopy h2 {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  color: #ffb092;
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  font-style: italic;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.ctaCopy p {
+  margin-top: 0.3rem;
+  color: rgb(255 243 232 / 88%);
+  font-size: 0.8rem;
+}
+
+.finalCta > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(105deg, #ff9878, #ffc5a4);
+  color: #28170f;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.finalCta > a:hover,
+.finalCta > a:focus-visible {
+  transform: translateY(-2px);
+  background: #ffc3a9;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    min-height: 410px;
+  }
+
+  .heroImage {
+    object-position: 67% center;
+  }
+
+  .heroOverlay {
+    background:
+      linear-gradient(90deg, rgb(17 8 5 / 92%) 0%, rgb(17 8 5 / 70%) 61%, rgb(17 8 5 / 28%) 100%),
+      linear-gradient(0deg, rgb(17 8 5 / 25%), transparent 58%);
+  }
+
+  .heroContent {
+    width: calc(100% - 2rem);
+  }
+
+  .heroContent h1 {
+    max-width: 340px;
+    font-size: clamp(2.85rem, 11vw, 4.3rem);
+  }
+
+  .categoryBar {
+    justify-content: flex-start;
+    min-height: 64px;
+    gap: 0.5rem;
+  }
+
+  .gallerySection {
+    width: calc(100% - 1.5rem);
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .photoCard {
+    height: clamp(150px, 31vw, 220px);
+    border-radius: 13px;
+  }
+
+  .finalCta {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.6rem;
+    width: calc(100% - 1rem);
+    border-radius: 20px;
+    padding: 1rem 0.8rem;
+  }
+
+  .ctaIcon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .ctaIcon svg {
+    width: 46px;
+    height: 46px;
+  }
+
+  .ctaCopy h2 {
+    font-size: 1.28rem;
+  }
+
+  .ctaCopy p {
+    font-size: 0.69rem;
+    line-height: 1.35;
+  }
+
+  .finalCta > a {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .photoGrid {
+    gap: 0.45rem;
+  }
+
+  .photoCard {
+    height: 155px;
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .categoryButton,
+  .photoCard::after,
+  .photoCard img,
+  .photoCard figcaption,
+  .finalCta > a {
+    transition: none;
+  }
+}

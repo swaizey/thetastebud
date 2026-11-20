@@ -1,0 +1,777 @@
+.detailsPage {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+}
+
+.icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.topGrid,
+.contentGrid,
+.bottomGrid {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+}
+
+.topGrid {
+  grid-template-columns: minmax(0, 1.65fr) minmax(245px, 0.85fr);
+}
+
+.contentGrid {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+
+.bottomGrid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+
+.orderInfoCard,
+.panel {
+  min-width: 0;
+  border: 1px solid #f4e3de;
+  border-radius: 19px;
+  background: rgb(255 252 250 / 92%);
+  box-shadow: 0 4px 11px rgb(88 36 25 / 4%);
+}
+
+.orderInfoCard {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  padding: 0.9rem;
+}
+
+.orderSummary {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  grid-template-rows: auto auto auto 1fr;
+  align-content: start;
+  column-gap: 0.8rem;
+  min-width: 0;
+  padding-right: 0.8rem;
+  border-right: 1px solid #f0d7cd;
+}
+
+.bagIcon {
+  display: grid;
+  grid-row: 1 / 4;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffe2d8;
+  color: #fa6d3e;
+}
+
+.bagIcon .icon {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.label,
+.customerIdentity small,
+.orderPlaced small,
+.deliveryAddress small {
+  color: #604d50;
+  font-size: 0.65rem;
+}
+
+.orderId {
+  margin-top: 0.12rem;
+  color: #2a171c;
+  font-size: 1.45rem;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-self: start;
+  margin-top: 0.5rem;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.statusBadge > span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.statusPending {
+  background: #ffe7d0;
+  color: #b75b10;
+}
+
+.statusPreparing {
+  background: #dceaff;
+  color: #1264d8;
+}
+
+.statusOntheWay,
+.statusDelivered {
+  background: #ddf2d6;
+  color: #247232;
+}
+
+.statusCancelled {
+  background: #ffe0df;
+  color: #d8403d;
+}
+
+.orderPlaced {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid #f3e7e2;
+  color: #8d3b27;
+}
+
+.orderPlaced > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.orderPlaced strong {
+  color: #3d2c2f;
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.customerDetails {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-width: 0;
+  padding-left: 0.9rem;
+}
+
+.customerIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.customerAvatar,
+.avatarFallback {
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: grid;
+  place-items: center;
+  background: #e7e8e9;
+  color: #7d8588;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.customerIdentity > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.customerIdentity strong {
+  overflow-wrap: anywhere;
+  color: #302024;
+  font-size: 0.95rem;
+}
+
+.customerDetails > p,
+.deliveryAddress {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: #483439;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.customerDetails > p .icon,
+.deliveryAddress > .icon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  color: #713e35;
+  fill: currentColor;
+}
+
+.deliveryAddress {
+  margin-top: 0.25rem;
+}
+
+.deliveryAddress > span {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.deliveryAddress small {
+  line-height: 1.3;
+}
+
+.deliveryEstimate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid #ffe2d7;
+  border-radius: 19px;
+  background: linear-gradient(135deg, #fff0e8, #ffdfd3);
+  text-align: center;
+}
+
+.deliveryEstimate h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  align-self: flex-start;
+  color: #3c2528;
+  font-size: 0.77rem;
+}
+
+.deliveryEstimate h2 .icon {
+  color: #fb693c;
+}
+
+.deliveryEstimate > strong {
+  margin-top: 0.65rem;
+  color: #2c171c;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.15;
+}
+
+.deliveryEstimate > span {
+  margin-top: 0.15rem;
+  color: #3b2629;
+  font-size: 0.78rem;
+}
+
+.deliveryEstimate > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 38px;
+  margin-top: 0.9rem;
+  padding: 0.45rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #ffc2a9;
+  color: #8a3c27;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.deliveryEstimate > button .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.panel {
+  padding: 0.85rem 0.95rem;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+  color: #352026;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.panelTitle .icon {
+  color: #f0653e;
+}
+
+.itemsList {
+  display: grid;
+}
+
+.orderItem {
+  display: grid;
+  grid-template-columns: 58px minmax(90px, 1fr) auto 34px auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  min-height: 58px;
+  border-bottom: 1px solid #f1e7e3;
+  color: #352328;
+  font-size: 0.68rem;
+}
+
+.orderItem > img {
+  width: 56px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.itemName {
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.itemName strong {
+  overflow: hidden;
+  color: #342126;
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+}
+
+.itemName small {
+  color: #806b6d;
+  font-size: 0.6rem;
+}
+
+.unitAmount,
+.itemTotal {
+  color: #342126;
+  font-size: 0.69rem;
+  white-space: nowrap;
+}
+
+.quantity {
+  color: #685356;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.noItems {
+  padding: 1rem 0;
+  color: #806b6d;
+  font-size: 0.72rem;
+}
+
+.amountSummary {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  color: #4a3337;
+  font-size: 0.7rem;
+}
+
+.amountSummary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.amountSummary dd {
+  color: #352328;
+  font-weight: 600;
+}
+
+.amountSummary .totalAmount {
+  align-items: center;
+  margin-top: 0.15rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: linear-gradient(100deg, #ffe4d8, #ffebe3);
+  color: #281a1e;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.amountSummary .totalAmount dd {
+  font-size: 1.1rem;
+}
+
+.statusTimeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0.7rem 0 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+
+.statusTimeline li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+  color: #71595b;
+  font-size: 0.58rem;
+  text-align: center;
+}
+
+.statusTimeline li::before {
+  position: absolute;
+  top: 16px;
+  right: 50%;
+  left: -50%;
+  height: 2px;
+  background: #ead9d5;
+  content: '';
+}
+
+.statusTimeline li:first-child::before {
+  display: none;
+}
+
+.stepIcon {
+  z-index: 1;
+  display: grid;
+  width: 33px;
+  height: 33px;
+  place-items: center;
+  border: 1px solid #e8d9d5;
+  border-radius: 50%;
+  background: #fffaf8;
+  color: #9f8c8d;
+}
+
+.stepIcon .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.stepComplete,
+.stepCurrent {
+  color: #493134 !important;
+}
+
+.stepComplete::before {
+  background: #ff7653 !important;
+}
+
+.stepComplete .stepIcon,
+.stepCurrent .stepIcon {
+  border-color: #ff7653;
+  background: #ff7653;
+  color: white;
+}
+
+.stepCurrent .stepIcon {
+  width: 42px;
+  height: 42px;
+  margin: -4px 0;
+}
+
+.stepCurrent .stepIcon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.stepCancelled .stepIcon {
+  border-color: #d8403d;
+  background: #d8403d;
+}
+
+.statusForm {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.statusForm > label {
+  display: grid;
+  gap: 0.25rem;
+  color: #5a4548;
+  font-size: 0.65rem;
+}
+
+.statusForm select,
+.etaInputWrap {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #ead8d1;
+  border-radius: 11px;
+  background: #fffaf8;
+  color: #39262a;
+}
+
+.statusForm select {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.72rem;
+}
+
+.etaInputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.6rem;
+  color: #96402b;
+}
+
+.datePickerButton {
+  display: grid;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 24px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.datePicker {
+  position: absolute;
+  top: 50%;
+  left: 0.6rem;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.etaInputWrap .icon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+}
+
+.etaInputWrap input:not(.datePicker) {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #39262a;
+  font-size: 0.72rem;
+}
+
+.statusForm select:focus-visible,
+.datePickerButton:focus-visible,
+.etaInputWrap:focus-within {
+  outline: 2px solid #ff9878;
+  outline-offset: 1px;
+}
+
+.updateButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 39px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(100deg, #ff8765, #ff704d);
+  color: white;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.updateButton .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.notice {
+  color: #267237;
+  font-size: 0.67rem;
+  text-align: center;
+}
+
+.notesPanel p {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #ffe8de;
+  border-radius: 12px;
+  background: #fff2ec;
+  color: #4b3539;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #ffd1c2;
+  border-radius: 999px;
+  background: #fff7f3;
+  color: #783b2d;
+  cursor: pointer;
+  font-size: 0.64rem;
+}
+
+.actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.actions .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.missingOrder {
+  display: grid;
+  justify-items: start;
+  gap: 0.55rem;
+  padding: 1.5rem;
+  border: 1px solid #f4e3de;
+  border-radius: 19px;
+  background: rgb(255 252 250 / 92%);
+  color: #493337;
+}
+
+.missingOrder h2 {
+  color: #2c171c;
+  font-size: 1.1rem;
+}
+
+.missingOrder p,
+.missingOrder a {
+  font-size: 0.75rem;
+}
+
+.missingOrder a {
+  color: #a9422b;
+}
+
+@media (max-width: 980px) {
+  .topGrid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
+  }
+
+  .orderInfoCard {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .orderItem {
+    grid-template-columns: 48px minmax(75px, 1fr) auto 28px auto;
+    gap: 0.35rem;
+  }
+
+  .orderItem > img {
+    width: 46px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topGrid,
+  .contentGrid,
+  .bottomGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .orderInfoCard {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .deliveryEstimate {
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 520px) {
+  .orderInfoCard {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .orderSummary {
+    padding: 0 0 0.7rem;
+    border-right: 0;
+    border-bottom: 1px solid #f0d7cd;
+  }
+
+  .customerDetails {
+    padding-left: 0;
+  }
+
+  .panel {
+    padding: 0.7rem;
+  }
+
+  .orderItem {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+  }
+
+  .orderItem > img {
+    width: 42px;
+    height: 40px;
+  }
+
+  .unitAmount,
+  .quantity {
+    display: none;
+  }
+
+  .itemTotal {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .statusTimeline li {
+    font-size: 0.5rem;
+  }
+
+  .stepIcon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .statusTimeline li::before {
+    top: 14px;
+  }
+}
+
+@media print {
+  .topbar,
+  .sidebar,
+  .deliveryEstimate > button,
+  .statusPanel,
+  .actionsPanel {
+    display: none !important;
+  }
+
+  .detailsPage {
+    display: block;
+  }
+
+  .orderInfoCard,
+  .panel {
+    box-shadow: none;
+  }
+}

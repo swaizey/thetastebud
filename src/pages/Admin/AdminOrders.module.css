@@ -1,0 +1,653 @@
+.ordersPage {
+  display: grid;
+  min-width: 0;
+  gap: 0.9rem;
+}
+
+.icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.orderMetrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.metricCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 118px;
+  padding: 0.8rem 0.9rem;
+  overflow: hidden;
+  border: 1px solid #f4e3de;
+  border-radius: 18px;
+  background: rgb(255 252 250 / 91%);
+  box-shadow: 0 3px 8px rgb(88 36 25 / 3%);
+}
+
+.metricCard > .icon:last-child {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.05rem;
+  width: 62px;
+  height: 62px;
+  color: #ffe8e0;
+  fill: #ffe8e0;
+  stroke-width: 1.2;
+}
+
+.metricIcon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.metricIcon .icon {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+}
+
+.peach {
+  background: #ffd1bd;
+  color: #fa6d3e;
+}
+
+.orange {
+  background: #ffe2b7;
+  color: #e88a00;
+}
+
+.blue {
+  background: #dceaff;
+  color: #1670ef;
+}
+
+.green {
+  background: #c9efc2;
+  color: #16792c;
+}
+
+.pink {
+  background: #ffd0d0;
+  color: #d84646;
+}
+
+.metricCard > strong,
+.metricCard > span:last-of-type {
+  position: relative;
+  z-index: 1;
+}
+
+.metricCard > strong {
+  margin-top: 0.2rem;
+  color: #2d1b20;
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.metricCard > span:last-of-type {
+  margin-top: 0.14rem;
+  color: #71595b;
+  font-size: 0.72rem;
+}
+
+.orderManagement {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 130px 130px auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.searchBox,
+.selectWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #f1dfd9;
+  border-radius: 999px;
+  background: rgb(255 252 250 / 88%);
+  color: #8b4937;
+  box-shadow: 0 3px 8px rgb(88 36 25 / 4%);
+}
+
+.searchBox .icon,
+.selectWrap > .icon:first-child {
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
+}
+
+.searchBox input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #332126;
+  font-size: 0.73rem;
+}
+
+.searchBox input::placeholder {
+  color: #876f70;
+  opacity: 1;
+}
+
+.searchBox:focus-within,
+.selectWrap:focus-within {
+  outline: 2px solid #ff9a79;
+  outline-offset: 2px;
+}
+
+.selectWrap {
+  gap: 0.35rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.selectWrap select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  appearance: none;
+  background: transparent;
+  color: #4a3032;
+  cursor: pointer;
+  font-size: 0.69rem;
+}
+
+.selectWrap > .icon:last-child {
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+  color: #553a3a;
+}
+
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.55rem 0.95rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(100deg, #ff8765, #ff704d);
+  color: #fffaf7;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.refreshButton:hover,
+.refreshButton:focus-visible {
+  background: #eb6343;
+}
+
+.refreshButton .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.orderTableWrap {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid #f4e3de;
+  border-radius: 18px;
+  background: rgb(255 252 250 / 93%);
+  box-shadow: 0 5px 13px rgb(88 36 25 / 5%);
+}
+
+.orderTable {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+  color: #39262a;
+  font-size: 0.68rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.orderTable thead {
+  background: #fff6f2;
+}
+
+.orderTable th {
+  height: 44px;
+  padding: 0.55rem 0.4rem;
+  color: #5e484b;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.orderTable td {
+  height: 54px;
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid #f3e8e4;
+}
+
+.orderTable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.orderTable th:first-child,
+.orderTable td:first-child {
+  width: 43px;
+  padding-left: 0.8rem;
+  text-align: center;
+}
+
+.orderTable input[type='checkbox'] {
+  width: 15px;
+  height: 15px;
+  accent-color: #ff7653;
+  cursor: pointer;
+}
+
+.selectedRow {
+  background: #fff8f4;
+}
+
+.orderId {
+  color: #352328;
+  font-weight: 700;
+}
+
+.orderId a {
+  border-radius: 4px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.orderId a:hover,
+.orderId a:focus-visible {
+  color: #c44a2b;
+  text-decoration: underline;
+}
+
+.customerCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar,
+.avatarFallback {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: grid;
+  place-items: center;
+  background: #e7e8e9;
+  color: #7d8588;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.customerCell > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.customerCell strong {
+  color: #342126;
+  font-size: 0.67rem;
+  font-weight: 600;
+}
+
+.customerCell small {
+  color: #806b6d;
+  font-size: 0.59rem;
+}
+
+.itemImages {
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+}
+
+.itemImages img {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.itemImages > span {
+  display: grid;
+  min-width: 27px;
+  height: 27px;
+  padding: 0 0.25rem;
+  place-items: center;
+  border: 1px solid #f4dfd8;
+  border-radius: 8px;
+  color: #66494b;
+  font-size: 0.63rem;
+}
+
+.amount {
+  color: #342126;
+  font-weight: 700;
+}
+
+.orderDate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: #49363a;
+}
+
+.orderDate small {
+  color: #725d60;
+  font-size: 0.62rem;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.39rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
+.statusBadge .icon {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.statusPending {
+  background: #ffe7d0;
+  color: #b75b10;
+}
+
+.statusPreparing {
+  background: #dceaff;
+  color: #1264d8;
+}
+
+.statusOntheWay,
+.statusDelivered {
+  background: #ddf2d6;
+  color: #247232;
+}
+
+.statusCancelled {
+  background: #ffe0df;
+  color: #d8403d;
+}
+
+.eta {
+  color: #594548;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+.rowActions > button,
+.actionMenuWrap > button {
+  display: grid;
+  width: 33px;
+  height: 33px;
+  place-items: center;
+  border: 1px solid #f3e5e0;
+  border-radius: 50%;
+  background: #fff5f1;
+  color: #7c3023;
+  cursor: pointer;
+}
+
+.rowActions > button:hover,
+.actionMenuWrap > button:hover,
+.rowActions > button:focus-visible,
+.actionMenuWrap > button:focus-visible {
+  background: #ffe3d8;
+}
+
+.rowActions .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.actionMenuWrap {
+  position: relative;
+}
+
+.actionMenu {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  display: grid;
+  width: 145px;
+  padding: 0.35rem;
+  border: 1px solid #f2dfd8;
+  border-radius: 12px;
+  background: #fffaf8;
+  box-shadow: 0 10px 24px rgb(75 29 11 / 15%);
+}
+
+.actionMenu > span {
+  padding: 0.4rem 0.5rem;
+  color: #806b6d;
+  font-size: 0.62rem;
+}
+
+.actionMenu > button {
+  padding: 0.4rem 0.5rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #493337;
+  cursor: pointer;
+  font-size: 0.67rem;
+  text-align: left;
+}
+
+.actionMenu > button:hover:not(:disabled) {
+  background: #fff0e9;
+}
+
+.actionMenu > button:disabled {
+  color: #b5a2a3;
+  cursor: default;
+}
+
+.emptyResult {
+  height: 100px !important;
+  color: #765e60;
+  text-align: center;
+}
+
+.tableFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 46px;
+  padding: 0.35rem 0.85rem;
+  border-top: 1px solid #f4e9e5;
+  color: #71595b;
+  font-size: 0.65rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pagination button {
+  display: grid;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.35rem;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: #fff6f2;
+  color: #65484b;
+  cursor: pointer;
+  font-size: 0.67rem;
+}
+
+.pagination button:hover:not(:disabled),
+.pagination .currentPage {
+  background: linear-gradient(100deg, #ff8765, #ff704d);
+  color: white;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.pagination .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1000px) {
+  .orderMetrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .toolbar {
+    grid-template-columns: minmax(150px, 1fr) 125px 125px auto;
+  }
+
+  .orderTable {
+    min-width: 960px;
+  }
+}
+
+@media (max-width: 700px) {
+  .ordersPage {
+    gap: 0.7rem;
+  }
+
+  .orderMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .metricCard {
+    min-height: 100px;
+    padding: 0.65rem;
+    border-radius: 15px;
+  }
+
+  .metricIcon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .metricIcon .icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .metricCard > strong {
+    font-size: 1.15rem;
+  }
+
+  .metricCard > span:last-of-type {
+    font-size: 0.66rem;
+  }
+
+  .metricCard > .icon:last-child {
+    width: 51px;
+    height: 51px;
+  }
+
+  .orderManagement {
+    gap: 0.6rem;
+  }
+
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .searchBox {
+    grid-column: 1 / -1;
+  }
+
+  .selectWrap {
+    min-height: 42px;
+  }
+
+  .refreshButton {
+    min-height: 42px;
+  }
+
+  .orderTableWrap {
+    border-radius: 14px;
+  }
+
+  .tableFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .pagination {
+    align-self: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refreshButton {
+    transition: none;
+  }
+}

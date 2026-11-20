@@ -1,0 +1,608 @@
+.page {
+  min-height: 100vh;
+  padding: calc(var(--site-nav-height) + 1rem) 1rem 2rem;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 92% 10%, rgb(255 205 180 / 45%), transparent 34rem),
+    linear-gradient(145deg, #fff8f4, #fff0e8);
+  color: #28170f;
+}
+
+.content {
+  display: grid;
+  gap: 0.9rem;
+  width: min(100%, 920px);
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  margin-bottom: 0.1rem;
+}
+
+.header h1 {
+  color: #2a100b;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  letter-spacing: -0.035em;
+  text-align: center;
+}
+
+.headerButton {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffe2d5;
+  color: #54140d;
+}
+
+.headerButton:hover,
+.headerButton:focus-visible {
+  background: #ffc9b6;
+}
+
+.icon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.orderHero {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: center;
+  gap: 1.1rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgb(255 152 120 / 25%);
+  border-radius: 24px;
+  background: linear-gradient(110deg, #ffeadf, #ffd1bc);
+}
+
+.orderHero > img {
+  width: 100%;
+  height: 150px;
+  border-radius: 17px;
+  object-fit: cover;
+}
+
+.orderIntro {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.orderIntro h2 {
+  color: #17110e;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(1.35rem, 3.8vw, 2rem);
+  line-height: 1.1;
+}
+
+.orderIntro > p {
+  color: #59463d;
+  font-size: 0.9rem;
+}
+
+.orderDate {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orderDate .icon {
+  flex-basis: 20px;
+  width: 20px;
+  height: 20px;
+  color: #54140d;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #dff0cd;
+  color: #24601f;
+  font-weight: 700;
+}
+
+.status .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.statusPending {
+  background: #ffe4c2;
+  color: #74420c;
+}
+
+.statusApproved {
+  background: #dff0cd;
+  color: #30631f;
+}
+
+.statusDelivered {
+  background: #dff0cd;
+  color: #30631f;
+}
+
+.progress,
+.panel {
+  border: 1px solid rgb(255 152 120 / 28%);
+  border-radius: 22px;
+  background: rgb(255 251 248 / 82%);
+  box-shadow: 0 7px 18px rgb(75 29 11 / 5%);
+}
+
+.progress {
+  padding: 1rem 1.25rem 0.85rem;
+}
+
+.progress ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  color: #77706c;
+  text-align: center;
+}
+
+.progress li:not(:last-child)::after {
+  position: absolute;
+  top: 19px;
+  left: calc(50% + 24px);
+  width: calc(100% - 48px);
+  height: 2px;
+  background: #e7d8d0;
+  content: '';
+}
+
+.progress li.stepDone:not(:last-child)::after {
+  background: #ff6537;
+}
+
+.stepMarker {
+  z-index: 1;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8dfda;
+  color: #fff;
+}
+
+.stepMarker .icon {
+  width: 23px;
+  height: 23px;
+  stroke-width: 3;
+}
+
+.stepDone .stepMarker {
+  background: #ff6537;
+}
+
+.stepLabel {
+  color: #35251e;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.stepCurrent {
+  color: #a64b2b;
+  font-size: 0.68rem;
+}
+
+.panel {
+  padding: 1rem 1.2rem;
+}
+
+.panelHeading,
+.panelHeading h2,
+.summary > h2 {
+  display: flex;
+  align-items: center;
+}
+
+.panelHeading {
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgb(255 152 120 / 30%);
+}
+
+.panelHeading h2,
+.summary > h2 {
+  gap: 0.6rem;
+  color: #351810;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+}
+
+.panelHeading h2 .icon,
+.summary > h2 .icon {
+  color: #57190f;
+}
+
+.panelHeading > span {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: #ffe2d5;
+  font-size: 0.8rem;
+}
+
+.items {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.7rem 0 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.item > img {
+  width: 112px;
+  height: 86px;
+  border-radius: 13px;
+  object-fit: cover;
+}
+
+.itemInfo {
+  min-width: 0;
+}
+
+.itemInfo h3 {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.itemInfo p {
+  margin-top: 0.1rem;
+  color: #66544a;
+  font-size: 0.82rem;
+}
+
+.itemInfo strong {
+  display: block;
+  margin-top: 0.15rem;
+  color: #ed572d;
+  font-size: 1.05rem;
+}
+
+.quantity {
+  white-space: nowrap;
+  font-size: 0.86rem;
+}
+
+.summary {
+  position: relative;
+  padding-bottom: 4.1rem;
+}
+
+.summary > h2 {
+  margin-bottom: 0.55rem;
+}
+
+.summary dl {
+  display: grid;
+  gap: 0.38rem;
+  margin: 0;
+}
+
+.summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.summary dt,
+.summary dd {
+  font-size: 0.9rem;
+}
+
+.total {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 22px;
+  background: linear-gradient(100deg, #ffe2d5, #ffd4c0);
+  color: #45180f;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.total strong {
+  color: #ed4e23;
+  font-size: clamp(1.45rem, 4vw, 2rem);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  padding: 0 0.3rem;
+}
+
+.reorderButton,
+.homeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 54px;
+  padding: 0.65rem 1rem;
+  border: 2px solid #54140d;
+  border-radius: 999px;
+  color: #54140d;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reorderButton {
+  background: transparent;
+}
+
+.homeButton {
+  background: #54140d;
+  color: #fff8f4;
+}
+
+.reorderButton:hover,
+.reorderButton:focus-visible {
+  background: #ffe2d5;
+}
+
+.homeButton:hover,
+.homeButton:focus-visible {
+  background: #75251a;
+}
+
+.thankYou {
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: #ffddcd;
+  color: #54140d;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.notFound {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.notFound h1 {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: 2rem;
+}
+
+.notFound p {
+  max-width: 430px;
+  color: #59463d;
+  line-height: 1.5;
+}
+
+.notFound a {
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: #54140d;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding-right: 0.65rem;
+    padding-left: 0.65rem;
+  }
+
+  .content {
+    gap: 0.7rem;
+  }
+
+  .header {
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+  }
+
+  .headerButton {
+    width: 42px;
+    height: 42px;
+  }
+
+  .orderHero {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 0.7rem;
+    padding: 0.65rem;
+    border-radius: 18px;
+  }
+
+  .orderHero > img {
+    height: 112px;
+    border-radius: 12px;
+  }
+
+  .orderIntro {
+    gap: 0.25rem;
+  }
+
+  .orderIntro h2 {
+    font-size: 1.05rem;
+  }
+
+  .orderIntro > p {
+    font-size: 0.72rem;
+  }
+
+  .orderDate .icon {
+    flex-basis: 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .status {
+    padding: 0.32rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  .progress {
+    padding: 0.8rem 0.4rem 0.65rem;
+    border-radius: 17px;
+  }
+
+  .progress li:not(:last-child)::after {
+    top: 16px;
+    left: calc(50% + 19px);
+    width: calc(100% - 38px);
+  }
+
+  .stepMarker {
+    width: 34px;
+    height: 34px;
+  }
+
+  .stepMarker .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stepLabel {
+    font-size: 0.65rem;
+  }
+
+  .stepCurrent {
+    font-size: 0.55rem;
+  }
+
+  .panel {
+    padding: 0.75rem;
+    border-radius: 17px;
+  }
+
+  .panelHeading h2,
+  .summary > h2 {
+    gap: 0.4rem;
+    font-size: 1.12rem;
+  }
+
+  .panelHeading h2 .icon,
+  .summary > h2 .icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .panelHeading > span {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.68rem;
+  }
+
+  .item {
+    grid-template-columns: 74px minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .item > img {
+    width: 74px;
+    height: 68px;
+    border-radius: 10px;
+  }
+
+  .itemInfo h3 {
+    font-size: 0.78rem;
+  }
+
+  .itemInfo p {
+    font-size: 0.67rem;
+  }
+
+  .itemInfo strong {
+    font-size: 0.87rem;
+  }
+
+  .quantity {
+    font-size: 0.7rem;
+  }
+
+  .summary {
+    padding-bottom: 3.3rem;
+  }
+
+  .summary dt,
+  .summary dd {
+    font-size: 0.78rem;
+  }
+
+  .total {
+    padding: 0.55rem 0.75rem;
+    border-radius: 17px;
+    font-size: 0.95rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+    padding: 0;
+  }
+
+  .reorderButton,
+  .homeButton {
+    gap: 0.3rem;
+    min-height: 46px;
+    padding: 0.55rem 0.45rem;
+    font-size: 0.75rem;
+  }
+
+  .actions .icon {
+    flex-basis: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .thankYou {
+    font-size: 0.85rem;
+  }
+}

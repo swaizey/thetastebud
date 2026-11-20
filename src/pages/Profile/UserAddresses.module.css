@@ -1,0 +1,210 @@
+.addButton,
+.formActions button,
+.emptyState button {
+  border: 0;
+  border-radius: 9px;
+  background: #ff9b76;
+  color: #351c15;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 750;
+  padding: 0.6rem 0.8rem;
+}
+
+.addButton:hover,
+.formActions button:hover,
+.emptyState button:hover {
+  background: #ffad8b;
+}
+
+.addressForm {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #f1e2dc;
+  border-radius: 14px;
+  background: #fffaf7;
+}
+
+.addressForm h3,
+.addressHeading h3,
+.emptyState h3 {
+  color: #382025;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.formGrid label {
+  display: grid;
+  gap: 0.35rem;
+  color: #4a3435;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.formGrid input,
+.formGrid select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e8d8d1;
+  border-radius: 8px;
+  background: #fff;
+  color: #342226;
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.formGrid input:focus,
+.formGrid select:focus {
+  border-color: #ba6040;
+  outline: 3px solid rgb(255 176 146 / 25%);
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.defaultCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+  color: #4a3435;
+  font-size: 0.75rem;
+}
+
+.defaultCheckbox input {
+  accent-color: #a64e31;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.formError,
+.formNotice {
+  margin-top: 0.65rem;
+  font-size: 0.73rem;
+}
+
+.formError {
+  color: #b42318;
+}
+
+.formNotice {
+  color: #267237;
+}
+
+.formActions button:first-child {
+  border: 1px solid #e8d8d1;
+  background: #fff;
+}
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+.addressCard {
+  padding: 0.9rem;
+  border: 1px solid #f1e2dc;
+  border-radius: 13px;
+  background: #fffaf7;
+}
+
+.addressHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.defaultBadge {
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  background: #e6f4e9;
+  color: #28603a;
+  font-size: 0.63rem;
+  font-weight: 750;
+}
+
+.addressCard > strong {
+  color: #382025;
+  font-size: 0.81rem;
+}
+
+.addressCard > p {
+  margin-top: 0.25rem;
+  color: #604d50;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.addressActions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+}
+
+.addressActions button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8c472d;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.addressActions button:hover {
+  text-decoration: underline;
+}
+
+.addressActions .removeButton {
+  color: #9c3434;
+}
+
+.emptyState {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  padding: 2.5rem 1rem;
+  color: #604d50;
+  text-align: center;
+}
+
+.emptyState p {
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .addressGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+}

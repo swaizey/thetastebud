@@ -1,0 +1,500 @@
+.salesPage {
+  display: grid;
+  min-width: 0;
+  gap: 0.9rem;
+}
+
+.icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.metricCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 118px;
+  padding: 0.8rem 1rem;
+  overflow: hidden;
+  border: 1px solid #f4e3de;
+  border-radius: 18px;
+  background: rgb(255 252 250 / 91%);
+  box-shadow: 0 3px 8px rgb(88 36 25 / 3%);
+}
+
+.metricCard > .icon {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0.1rem;
+  width: 72px;
+  height: 72px;
+  color: #ffe8e0;
+  fill: #ffe8e0;
+  stroke-width: 1.2;
+}
+
+.metricIcon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffd1bd;
+  color: #ed6035;
+}
+
+.metricIcon .icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.metricCard > strong,
+.metricCard > span:not(.metricIcon) {
+  position: relative;
+  z-index: 1;
+}
+
+.metricCard > strong {
+  margin-top: 0.2rem;
+  color: #2d1b20;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.metricCard > span:not(.metricIcon) {
+  margin-top: 0.13rem;
+  color: #71595b;
+  font-size: 0.7rem;
+}
+
+.metricChange {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  align-self: flex-end;
+  margin-top: -0.9rem !important;
+  color: #298542 !important;
+  font-size: 0.65rem !important;
+  font-weight: 700;
+}
+
+.metricChange > span {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e0f3db;
+}
+
+.metricChange small {
+  display: block;
+  margin-left: 0.15rem;
+  color: #806b6d;
+  font-size: 0.53rem;
+  font-weight: 400;
+}
+
+.panel {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #f4e3de;
+  border-radius: 19px;
+  background: rgb(255 252 250 / 91%);
+  box-shadow: 0 4px 11px rgb(88 36 25 / 4%);
+}
+
+.panelHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 35px;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid #f2e7e2;
+}
+
+.panelHeading h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  color: #382025;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.panelHeading h2 .icon {
+  color: #e85c34;
+}
+
+.panelHeading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+  color: #4a2828;
+  font-size: 0.66rem;
+  text-decoration: none;
+}
+
+.panelHeading > a:hover {
+  color: #e85c34;
+}
+
+.panelHeading > a .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.periodToggle {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 2px;
+  border: 1px solid #f3e4df;
+  border-radius: 999px;
+  background: #fff7f4;
+}
+
+.periodToggle button {
+  min-width: 69px;
+  padding: 0.36rem 0.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #6d5557;
+  cursor: pointer;
+  font-size: 0.65rem;
+}
+
+.periodToggle .periodActive {
+  background: linear-gradient(100deg, #ff805e, #ff704d);
+  color: #fff;
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr);
+  grid-template-rows: 190px 24px;
+  column-gap: 0.45rem;
+  padding-top: 0.5rem;
+}
+
+.yLabels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.4rem 0 0.2rem;
+  color: #624d50;
+  font-size: 0.62rem;
+  text-align: right;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 190px;
+  overflow: visible;
+}
+
+.gridLine {
+  stroke: #f0e5e0;
+  stroke-width: 1;
+}
+
+.gridLineVertical {
+  stroke: #f4ece8;
+  stroke-width: 1;
+}
+
+.chartArea {
+  fill: url(#sales-area-gradient);
+  fill: #ff8764;
+  fill-opacity: 0.16;
+}
+
+.chartLine {
+  fill: none;
+  stroke: #ff7653;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartPoint {
+  fill: #ff7653;
+  stroke: #fffaf7;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.xLabels {
+  display: flex;
+  grid-column: 2;
+  justify-content: space-between;
+  padding: 0.25rem 0 0;
+  color: #705c5d;
+  font-size: 0.65rem;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
+  gap: 0.85rem;
+}
+
+.topList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topList li {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 58px;
+  border-bottom: 1px solid #f3e8e4;
+}
+
+.topList li:last-child {
+  border-bottom: 0;
+}
+
+.topList img {
+  width: 58px;
+  height: 48px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.topList li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.topList li > div strong {
+  overflow: hidden;
+  color: #382428;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topList li > div span {
+  color: #806b6d;
+  font-size: 0.62rem;
+}
+
+.revenue {
+  color: #352328;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.recentSales table {
+  width: 100%;
+  min-width: 590px;
+  border-collapse: collapse;
+  color: #39262a;
+  font-size: 0.62rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.recentSales thead {
+  background: #fff6f2;
+}
+
+.recentSales th {
+  height: 35px;
+  padding: 0.45rem 0.4rem;
+  color: #695255;
+  font-size: 0.58rem;
+  font-weight: 500;
+}
+
+.recentSales td {
+  height: 42px;
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid #f3e8e4;
+}
+
+.recentSales tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.saleAmount {
+  color: #342126;
+  font-weight: 700;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.57rem;
+  font-weight: 600;
+}
+
+.statusDelivered {
+  background: #ddf2d6;
+  color: #247232;
+}
+
+.statusPreparing {
+  background: #dceaff;
+  color: #1264d8;
+}
+
+.statusPending {
+  background: #ffe7d0;
+  color: #b75b10;
+}
+
+@media (max-width: 1000px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .recentSales table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 700px) {
+  .salesPage {
+    gap: 0.7rem;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .metricCard {
+    min-height: 100px;
+    padding: 0.65rem;
+    border-radius: 15px;
+  }
+
+  .metricIcon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .metricIcon .icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .metricCard > strong {
+    font-size: 1.08rem;
+  }
+
+  .metricCard > span:not(.metricIcon) {
+    font-size: 0.65rem;
+  }
+
+  .metricCard > .icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .metricChange {
+    margin-top: -0.75rem !important;
+    font-size: 0.6rem !important;
+  }
+
+  .metricChange small {
+    font-size: 0.48rem;
+  }
+
+  .panel {
+    padding: 0.75rem;
+    border-radius: 16px;
+  }
+
+  .panelHeading h2 {
+    gap: 0.4rem;
+    font-size: 0.86rem;
+  }
+
+  .periodToggle button {
+    min-width: 54px;
+    padding: 0.32rem 0.45rem;
+    font-size: 0.59rem;
+  }
+
+  .chart {
+    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-rows: 155px 22px;
+    column-gap: 0.25rem;
+  }
+
+  .chartSvg {
+    height: 155px;
+  }
+
+  .yLabels {
+    font-size: 0.55rem;
+  }
+
+  .xLabels {
+    font-size: 0.58rem;
+  }
+
+  .topList li {
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    gap: 0.45rem;
+  }
+
+  .topList img {
+    width: 50px;
+    height: 43px;
+  }
+
+  .topList li > div strong,
+  .revenue {
+    font-size: 0.62rem;
+  }
+
+  .topList li > div span {
+    font-size: 0.57rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .periodToggle button {
+    transition: none;
+  }
+}

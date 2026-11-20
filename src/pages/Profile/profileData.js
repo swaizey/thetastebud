@@ -1,0 +1,15 @@
+export const initialProfile = {
+  name: 'Patrick Adigwe',
+  email: 'patrick@gmail.com',
+  phone: '+234 803 123 4567',
+  username: 'patrick',
+  address: '12 Taste Bud Street',
+  city: 'Onitsha',
+  state: 'Anambra State',
+  country: 'Nigeria',
+  cuisine: 'African',
+  dietaryPreference: 'None',
+  newsletter: true,
+  photo: null,
+  memberSince: 'Nov 17, 2026',
+}

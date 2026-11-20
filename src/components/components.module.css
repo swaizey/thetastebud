@@ -1,0 +1,542 @@
+.header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  min-height: 92px;
+  padding: 0 max(1.5rem, calc((100% - 1360px) / 2));
+  border-bottom: 0;
+  background: transparent;
+  transition: transform 220ms ease, backdrop-filter 220ms ease, background-color 220ms ease;
+}
+
+.headerScrolled {
+  background-color: rgb(18 11 8 / 12%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.headerHidden {
+  transform: translateY(-110%);
+  pointer-events: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  width: 112px;
+}
+
+.brand img {
+  display: block;
+  width: 100%;
+  max-height: 76px;
+  object-fit: contain;
+}
+
+.navigationPanel {
+  display: contents;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.3vw, 2.25rem);
+  grid-column: 2;
+  justify-self: center;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  color: #fff7f0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.mobileNavIcon,
+.navArrow,
+.mobilePanelHeader,
+.mobileMenuFooter,
+.mobileMenuFood,
+.orderIcon,
+.menuBackdrop {
+  display: none;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  color: #ffb092;
+}
+
+.currentLink {
+  color: #ffb092;
+}
+
+.orderLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  background: #ffb092;
+  color: #21130f;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.profileLink {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgb(255 176 146 / 72%);
+  border-radius: 50%;
+  color: #fff7f0;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.profileLink svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.profileLink:hover,
+.profileLink:focus-visible,
+.profileLinkActive {
+  background: #ffb092;
+  color: #21130f;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 1rem;
+  grid-column: 3;
+}
+
+.cartLink {
+  position: relative;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: #fff7f0;
+  text-decoration: none;
+}
+
+.cartLink svg {
+  width: 24px;
+  height: 24px;
+}
+
+.cartCount {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffb092;
+  color: #21130f;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.orderLink:hover,
+.orderLink:focus-visible {
+  transform: translateY(-2px);
+  background: #ffc3a9;
+}
+
+.menuToggle {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .header {
+    z-index: 20;
+    grid-template-columns: 1fr auto auto;
+    min-height: 76px;
+    padding: 0 1rem;
+  }
+
+  .brand {
+    width: 92px;
+  }
+
+  .brand img {
+    max-height: 64px;
+  }
+
+  .navigationPanel {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: min(82vw, 460px);
+    height: 100vh;
+    height: 100dvh;
+    padding: 1.2rem 1.1rem 9rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+    border: 1px solid rgb(255 176 146 / 12%);
+    border-radius: 22px 0 0 22px;
+    background:
+      radial-gradient(ellipse at 86% 2%, rgb(115 43 19 / 31%), transparent 42%),
+      linear-gradient(145deg, #210e06 0%, #170a05 68%, #260f07 100%);
+    box-shadow: -16px 0 45px rgb(0 0 0 / 35%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(calc(100% + 1.5rem));
+    visibility: hidden;
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease,
+      visibility 320ms;
+  }
+
+  .navigationPanel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navigationPanelOpen {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .menuBackdrop {
+    position: fixed;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgb(8 4 2 / 48%);
+    -webkit-backdrop-filter: blur(8px) brightness(0.7) saturate(0.8);
+    backdrop-filter: blur(8px) brightness(0.7) saturate(0.8);
+    cursor: default;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 240ms ease, visibility 240ms;
+  }
+
+  .menuBackdropOpen {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .menuToggle {
+    position: relative;
+    z-index: 4;
+    display: grid;
+    grid-column: 3;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border: 1px solid rgb(255 176 146 / 55%);
+    border-radius: 50%;
+    background: rgb(20 12 9 / 65%);
+    color: #ffb092;
+    cursor: pointer;
+  }
+
+  .navigationPanelOpen ~ .menuBackdrop {
+    z-index: 2;
+  }
+
+  .menuToggle[aria-expanded='true'] {
+    position: fixed;
+    top: 1.55rem;
+    right: 1.25rem;
+    width: 52px;
+    height: 52px;
+    border-color: #b95d3d;
+    background: rgb(30 12 5 / 50%);
+    color: #fff7f0;
+  }
+
+  .menuToggle svg {
+    width: 27px;
+    height: 27px;
+    transition: transform 260ms ease;
+  }
+
+  .menuToggle[aria-expanded='true'] svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.8;
+    transform: rotate(90deg);
+  }
+
+  .mobilePanelHeader {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: 95px;
+    padding-right: 4.5rem;
+  }
+
+  .mobileBrand {
+    display: block;
+    width: 126px;
+  }
+
+  .mobileBrand img {
+    display: block;
+    width: 100%;
+    max-height: 86px;
+    object-fit: contain;
+  }
+
+  .headerActions {
+    position: relative;
+    z-index: 1;
+    grid-column: auto;
+    justify-self: stretch;
+    justify-content: stretch;
+    align-items: center;
+    width: 100%;
+    gap: 0.65rem;
+    margin-top: 0.95rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .cartLink {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgb(255 176 146 / 60%);
+    border-radius: 50%;
+    color: #ffb092;
+  }
+
+  .cartCount {
+    top: -3px;
+    right: -3px;
+  }
+
+  .orderLink {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 999px;
+    background: linear-gradient(105deg, #ff9878, #ffc5a4);
+    font-size: 0.88rem;
+  }
+
+  .profileLink {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-color: rgb(255 176 146 / 60%);
+    color: #ffb092;
+  }
+
+  .profileLink:hover,
+  .profileLink:focus-visible,
+  .profileLinkActive {
+    background: #ffb092;
+    color: #21130f;
+  }
+
+  .orderIcon {
+    display: block;
+    width: 27px;
+    height: 27px;
+    margin-right: 0.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+
+  .navigation {
+    position: relative;
+    z-index: 1;
+    grid-column: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 0.35rem;
+  }
+
+  .navLink {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 20px;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 53px;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid rgb(199 104 67 / 24%);
+    border-radius: 0;
+    color: #fff7f0;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .navigation .navLink:last-child {
+    border-bottom: 0;
+  }
+
+  .mobileNavIcon {
+    display: block;
+    width: 27px;
+    height: 27px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .navLink:first-child .mobileNavIcon {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .navArrow {
+    display: block;
+    justify-self: end;
+    color: currentColor;
+    font-family: Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 0.7;
+  }
+
+  .currentLink {
+    min-height: 53px;
+    border-bottom-color: transparent;
+    border-radius: 20px;
+    background: linear-gradient(100deg, #ff9878, #ffad8b);
+    color: #25130c;
+    font-weight: 800;
+  }
+
+  .navigation .currentLink + .navLink {
+    border-top: 0;
+  }
+
+  .mobileMenuFooter {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin-top: auto;
+    padding: 1.15rem 0 0.35rem;
+    color: #ffab8b;
+    text-align: center;
+  }
+
+  .footerRule {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: #ff9878;
+    font-size: 1.1rem;
+  }
+
+  .footerRule::before,
+  .footerRule::after {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, #b45c3d);
+    content: '';
+  }
+
+  .footerRule::after {
+    background: linear-gradient(90deg, #b45c3d, transparent);
+  }
+
+  .mobileMenuFooter p {
+    margin-top: 0.6rem;
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .mobileMenuFood {
+    position: absolute;
+    z-index: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: 72% 58%;
+    opacity: 0.92;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(0deg, #000 20%, transparent 100%);
+    mask-image: linear-gradient(0deg, #000 20%, transparent 100%);
+  }
+
+  .navigationPanelOpen .headerActions,
+  .navigationPanelOpen .navigation {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .navigationPanel {
+    width: 84vw;
+    padding-right: 0.85rem;
+    padding-left: 0.85rem;
+  }
+
+  .menuToggle[aria-expanded='true'] {
+    top: 1.35rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none;
+  }
+
+  .navigationPanel,
+  .menuBackdrop,
+  .menuToggle svg {
+    transition: none;
+  }
+}
