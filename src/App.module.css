@@ -10,7 +10,7 @@
   position: fixed;
   z-index: 40;
   right: max(1rem, env(safe-area-inset-right));
-  bottom: max(1rem, env(safe-area-inset-bottom));
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 100px);
   display: grid;
   width: 3.5rem;
   height: 3.5rem;
