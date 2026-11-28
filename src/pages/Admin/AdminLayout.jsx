@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import styles from './AdminDashboard.module.css'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
   { label: 'Dashboard', icon: 'home', to: '/admin' },
@@ -39,6 +40,8 @@ function AdminIcon({ name }) {
 
 function AdminLayout() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const { logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const isUserProfilePage = pathname.startsWith('/admin/users/')
@@ -50,6 +53,12 @@ function AdminLayout() {
   const isOrdersPage = pathname === '/admin/orders' || isOrderDetailsPage
   const isMenuPage = pathname === '/admin/menu'
   const isSalesPage = pathname === '/admin/sales'
+  const logoutFromAdmin = async () => {
+    await logout()
+    setProfileOpen(false)
+    setSidebarOpen(false)
+    navigate('/admin/login', { replace: true })
+  }
   const pageTitle = isOrderDetailsPage
     ? 'Order Details'
     : isUserProfilePage
@@ -134,10 +143,10 @@ function AdminLayout() {
         <div className={styles.sidebarArt} aria-hidden="true">
           <AdminIcon name="menu" />
         </div>
-        <Link className={styles.logout} to="/" onClick={() => setSidebarOpen(false)}>
+        <button className={styles.logout} type="button" onClick={logoutFromAdmin}>
           <AdminIcon name="logout" />
           <span>Logout</span>
-        </Link>
+        </button>
       </aside>
       {sidebarOpen && (
         <button
@@ -193,7 +202,7 @@ function AdminLayout() {
             {profileOpen && (
               <div className={styles.profileMenu}>
                 <span>Signed in as Admin</span>
-                <Link to="/" onClick={() => setProfileOpen(false)}>Logout</Link>
+                <button type="button" onClick={logoutFromAdmin}>Logout</button>
               </div>
             )}
           </div>

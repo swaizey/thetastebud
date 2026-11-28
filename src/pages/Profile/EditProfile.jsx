@@ -1,11 +1,16 @@
-import { useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import customerAvatar from '../../assets/customer2.png'
 import heroFood from '../../assets/partyjollof.png'
 import AccountSidebar from './AccountSidebar.jsx'
-import { initialProfile } from './profileData.js'
 import profileStyles from './Profile.module.css'
 import styles from './EditProfile.module.css'
+import { useAuth } from '../../context/AuthContext.jsx'
+import { useAccountProfile } from '../../hooks/useAccountProfile.js'
+import { apiRequest } from '../../utils/api.js'
+
+const maxAvatarBytes = 5 * 1024 * 1024
+const qualityPromptThresholdBytes = 2 * 1024 * 1024
 
 function EditIcon({ name }) {
   const paths = {
@@ -19,19 +24,38 @@ function EditIcon({ name }) {
     leaf: <><path d="M20 4c-9 0-15 4-15 11a5 5 0 0 0 5 5c7 0 11-6 10-16Z" /><path d="M5 19c3-4 6-7 11-10" /></>,
     back: <path d="M19 12H5m7 7-7-7 7-7" />,
     save: <><path d="M4 3h14l3 3v15H3V3h1Z" /><path d="M7 3v6h10V3M7 21v-8h10v8" /></>,
+    close: <path d="m6 6 12 12M18 6 6 18" />,
+    arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,
   }
 
   return <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>
 }
 
 function EditProfile() {
-  const { state } = useLocation()
   const navigate = useNavigate()
+  const { user, refreshUser } = useAuth()
+  const { profile, saveProfile: cacheProfile } = useAccountProfile()
   const photoInputRef = useRef(null)
-  const profile = state?.profile || initialProfile
+  const changePhotoButtonRef = useRef(null)
+  const keepOriginalQualityButtonRef = useRef(null)
+  const photoReaderRef = useRef(null)
+  const qualityModalWasOpenRef = useRef(false)
   const [draft, setDraft] = useState(profile)
+  const [avatarFile, setAvatarFile] = useState(null)
+  const [pendingQualityFile, setPendingQualityFile] = useState(null)
+  const [avatarQualityChoice, setAvatarQualityChoice] = useState(null)
   const [photoError, setPhotoError] = useState('')
   const [saveError, setSaveError] = useState('')
+
+  useEffect(() => {
+    if (pendingQualityFile) {
+      qualityModalWasOpenRef.current = true
+      keepOriginalQualityButtonRef.current?.focus()
+    } else if (qualityModalWasOpenRef.current) {
+      changePhotoButtonRef.current?.focus()
+      qualityModalWasOpenRef.current = false
+    }
+  }, [pendingQualityFile])
 
   const updateField = (event) => {
     const { name, value, checked, type } = event.target
@@ -39,35 +63,108 @@ function EditProfile() {
     setSaveError('')
   }
 
+  const restoreProfilePhoto = () => {
+    setDraft((current) => ({ ...current, photo: profile.photo }))
+  }
+
+  const loadPhoto = (file, qualityChoice) => {
+    setAvatarQualityChoice(qualityChoice)
+    setPhotoError('')
+
+    const reader = new FileReader()
+    photoReaderRef.current = reader
+    reader.onload = () => {
+      if (photoReaderRef.current !== reader) return
+      photoReaderRef.current = null
+      if (typeof reader.result === 'string') {
+        setAvatarFile(file)
+        setDraft((current) => ({ ...current, photo: reader.result }))
+      } else {
+        setAvatarFile(null)
+        setAvatarQualityChoice(null)
+        restoreProfilePhoto()
+        setPhotoError('The selected photo could not be loaded.')
+      }
+    }
+    reader.onerror = () => {
+      if (photoReaderRef.current !== reader) return
+      photoReaderRef.current = null
+      setAvatarFile(null)
+      setAvatarQualityChoice(null)
+      restoreProfilePhoto()
+      setPhotoError('The selected photo could not be loaded.')
+    }
+    reader.readAsDataURL(file)
+  }
+
   const choosePhoto = (event) => {
     const file = event.target.files?.[0]
     event.target.value = ''
+    const previousReader = photoReaderRef.current
+    photoReaderRef.current = null
+    previousReader?.abort()
     if (!file) return
 
+    setAvatarFile(null)
+    setPendingQualityFile(null)
+    setAvatarQualityChoice(null)
     if (!['image/jpeg', 'image/png'].includes(file.type)) {
       setPhotoError('Choose a JPG or PNG image.')
+      restoreProfilePhoto()
       return
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      setPhotoError('The photo must be 2 MB or smaller.')
+    if (file.size > maxAvatarBytes) {
+      setPhotoError('The photo must be 5 MB or smaller.')
+      restoreProfilePhoto()
       return
     }
 
     setPhotoError('')
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        setDraft((current) => ({ ...current, photo: reader.result }))
-      } else {
-        setPhotoError('The selected photo could not be loaded.')
-      }
+    if (file.size > qualityPromptThresholdBytes) {
+      setPendingQualityFile(file)
+      return
     }
-    reader.onerror = () => setPhotoError('The selected photo could not be loaded.')
-    reader.readAsDataURL(file)
+
+    loadPhoto(file, null)
   }
 
-  const saveProfile = (event) => {
+  const choosePhotoQuality = (qualityChoice) => {
+    if (!pendingQualityFile) return
+    const file = pendingQualityFile
+    setPendingQualityFile(null)
+    loadPhoto(file, qualityChoice)
+  }
+
+  const cancelQualityChoice = () => {
+    setPendingQualityFile(null)
+    setAvatarFile(null)
+    setAvatarQualityChoice(null)
+    setPhotoError('Photo selection cancelled; it was not uploaded.')
+    restoreProfilePhoto()
+  }
+
+  const handleQualityDialogKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      cancelQualityChoice()
+      return
+    }
+    if (event.key !== 'Tab') return
+
+    const buttons = Array.from(event.currentTarget.querySelectorAll('button:not(:disabled)'))
+    const firstButton = buttons[0]
+    const lastButton = buttons[buttons.length - 1]
+    if (event.shiftKey && document.activeElement === firstButton) {
+      event.preventDefault()
+      lastButton?.focus()
+    } else if (!event.shiftKey && document.activeElement === lastButton) {
+      event.preventDefault()
+      firstButton?.focus()
+    }
+  }
+
+  const saveProfile = async (event) => {
     event.preventDefault()
     const updatedProfile = {
       ...draft,
@@ -78,13 +175,41 @@ function EditProfile() {
       city: draft.city.trim(),
       state: draft.state.trim(),
     }
-    if (updatedProfile.name.length < 2 || updatedProfile.phone.length < 7 ||
-      updatedProfile.address.length < 5 || updatedProfile.city.length < 2) {
+    const phone = updatedProfile.phone.replace(/[^\d+]/g, '')
+    if (updatedProfile.name.length < 2 ||
+      (phone && !/^\+?[1-9]\d{7,14}$/.test(phone)) ||
+      (updatedProfile.address && updatedProfile.address.length < 5) ||
+      (updatedProfile.city && updatedProfile.city.length < 2)) {
       setSaveError('Check that each required field is complete and meets its minimum length.')
       return
     }
 
-    navigate('/profile', { state: { profile: updatedProfile } })
+    try {
+      if (avatarFile) {
+        const uploadPath = avatarQualityChoice === 'reduced'
+          ? '/users/me/avatar?reduceQuality=true'
+          : avatarQualityChoice === 'original'
+            ? '/users/me/avatar?keepOriginalQuality=true'
+            : '/users/me/avatar'
+        await apiRequest(uploadPath, {
+          method: 'POST',
+          headers: { 'Content-Type': avatarFile.type },
+          body: avatarFile,
+        })
+      }
+      await apiRequest('/users/me', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          fullName: updatedProfile.name,
+          phone: phone || null,
+        }),
+      })
+      const currentUser = await refreshUser()
+      const savedProfile = cacheProfile(updatedProfile, currentUser || user)
+      navigate('/profile', { state: { profile: savedProfile } })
+    } catch (error) {
+      setSaveError(error.message || 'Unable to save your profile.')
+    }
   }
 
   return (
@@ -114,7 +239,12 @@ function EditProfile() {
                     <img src={draft.photo || customerAvatar} alt={`${draft.name} profile`} />
                     <span><EditIcon name="camera" /></span>
                   </div>
-                  <button className={styles.changePhotoButton} type="button" onClick={() => photoInputRef.current?.click()}>
+                  <button
+                    ref={changePhotoButtonRef}
+                    className={styles.changePhotoButton}
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                  >
                     <EditIcon name="camera" />Change Photo
                   </button>
                   <input
@@ -125,7 +255,7 @@ function EditProfile() {
                     onChange={choosePhoto}
                     aria-label="Choose a profile photo"
                   />
-                  <small>JPG, PNG (Max 2MB)</small>
+                  <small>JPG, PNG (Max 5 MB; optional quality reduction above 2 MB)</small>
                   {photoError && <p className={styles.photoError} role="alert">{photoError}</p>}
                 </div>
 
@@ -134,19 +264,20 @@ function EditProfile() {
                   <div className={styles.fieldsGrid}>
                     <label>Full Name <em>*</em><input autoComplete="name" name="name" minLength={2} maxLength={100} required value={draft.name} onChange={updateField} /></label>
                       <label>Email Address <em>*</em><span className={styles.inputWithIcon}><EditIcon name="mail" /><input autoComplete="email" name="email" type="email" maxLength={254} required readOnly value={draft.email} /></span></label>
-                      <label>Phone Number <em>*</em><span className={styles.inputWithIcon}><EditIcon name="phone" /><input autoComplete="tel" name="phone" type="tel" inputMode="tel" minLength={7} maxLength={24} required value={draft.phone} onChange={updateField} /></span></label>
-                      <label>Username<input autoComplete="username" name="username" maxLength={30} value={draft.username} onChange={updateField} /></label>
+                      <label>Phone Number<span className={styles.inputWithIcon}><EditIcon name="phone" /><input autoComplete="tel" name="phone" type="tel" inputMode="tel" maxLength={24} value={draft.phone} onChange={updateField} /></span></label>
+                      <label>Username<input autoComplete="username" name="username" value={draft.username} readOnly /></label>
                   </div>
                 </div>
               </section>
 
               <section className={styles.formSection} aria-labelledby="delivery-address-title">
                 <h3 id="delivery-address-title"><EditIcon name="pin" />Delivery Address</h3>
-                <label className={styles.fullWidth}>Address <em>*</em><input autoComplete="street-address" name="address" minLength={5} maxLength={200} required value={draft.address} onChange={updateField} /></label>
+                <label className={styles.fullWidth}>Address<input autoComplete="street-address" name="address" maxLength={200} value={draft.address} onChange={updateField} /></label>
                 <div className={styles.fieldsGrid}>
-                  <label>City <em>*</em><input autoComplete="address-level2" name="city" minLength={2} maxLength={100} required value={draft.city} onChange={updateField} /></label>
-                  <label>State <em>*</em>
-                    <select autoComplete="address-level1" name="state" required value={draft.state} onChange={updateField}>
+                  <label>City<input autoComplete="address-level2" name="city" maxLength={100} value={draft.city} onChange={updateField} /></label>
+                  <label>State
+                    <select autoComplete="address-level1" name="state" value={draft.state} onChange={updateField}>
+                      <option value="">Select a state</option>
                       {['Anambra State', 'Abia State', 'Lagos', 'Rivers State', 'Enugu State', 'Federal Capital Territory'].map((state) => <option key={state}>{state}</option>)}
                     </select>
                   </label>
@@ -183,6 +314,69 @@ function EditProfile() {
           </section>
         </section>
       </div>
+
+      {pendingQualityFile && (
+        <div
+          className={styles.qualityModalBackdrop}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) cancelQualityChoice()
+          }}
+        >
+          <section
+            className={styles.qualityModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quality-modal-title"
+            aria-describedby="quality-modal-description"
+            onKeyDown={handleQualityDialogKeyDown}
+          >
+            <button
+              className={styles.qualityModalClose}
+              type="button"
+              onClick={cancelQualityChoice}
+              aria-label="Close image quality dialog"
+            >
+              <EditIcon name="close" />
+            </button>
+            <div className={styles.qualityArtwork} aria-hidden="true">
+              <svg viewBox="0 0 128 112">
+                <rect x="14" y="12" width="92" height="72" rx="12" />
+                <circle cx="79" cy="33" r="9" />
+                <path d="m23 72 23-25 16 17 10-10 25 20" />
+              </svg>
+              <span className={styles.qualityDownloadBadge}>
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3v12m-5-5 5 5 5-5M5 20h14" />
+                </svg>
+              </span>
+            </div>
+            <h2 id="quality-modal-title">Reduce Image Quality?</h2>
+            <p id="quality-modal-description">
+              Your image is quite large. Do you want to reduce its quality to make the upload faster?
+            </p>
+            <small className={styles.qualitySecurityNote}>
+              The server securely validates and re-encodes your image either way.
+            </small>
+            <div className={styles.qualityModalActions}>
+              <button
+                ref={keepOriginalQualityButtonRef}
+                className={styles.keepOriginalQualityButton}
+                type="button"
+                onClick={() => choosePhotoQuality('original')}
+              >
+                Keep Original Quality
+              </button>
+              <button
+                className={styles.reduceQualityButton}
+                type="button"
+                onClick={() => choosePhotoQuality('reduced')}
+              >
+                Yes, Reduce Quality <EditIcon name="arrow" />
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   )
 }

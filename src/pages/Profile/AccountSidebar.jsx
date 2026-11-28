@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import customerAvatar from '../../assets/customer2.png'
+import { useAuth } from '../../context/AuthContext.jsx'
 import styles from './Profile.module.css'
 
 function AccountIcon({ name }) {
@@ -18,6 +19,14 @@ function AccountIcon({ name }) {
 }
 
 function AccountSidebar({ profile, active }) {
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login', { replace: true })
+  }
+
   const profileLink = active === 'edit'
     ? { key: 'edit', label: 'Edit Profile', to: '/profile/edit', icon: 'profile' }
     : { key: 'profile', label: 'My Profile', to: '/profile', icon: 'profile' }
@@ -51,9 +60,9 @@ function AccountSidebar({ profile, active }) {
             <span>{label}</span>
           </Link>
         ))}
-        <Link className={styles.accountNavLink} to="/" aria-label="Log out">
+        <button className={`${styles.accountNavLink} ${styles.accountNavLogout}`} type="button" onClick={handleLogout}>
           <AccountIcon name="logout" /><span>Log Out</span>
-        </Link>
+        </button>
       </nav>
       <div className={styles.sidebarPromo}>
         <span>Good Food.<br />Great Mood.</span>

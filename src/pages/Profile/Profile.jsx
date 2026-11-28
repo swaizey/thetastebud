@@ -1,52 +1,27 @@
-import { useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useOrder } from '../../context/useOrder'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import AccountSidebar from './AccountSidebar.jsx'
 import customerAvatar from '../../assets/customer2.png'
-import grilledChicken from '../../assets/chickenbrest.png'
-import noodles from '../../assets/plainpasta.png'
 import heroFood from '../../assets/partyjollof.png'
-import jollof from '../../assets/partyjollof.png'
 import { useFavorites } from '../../hooks/useFavorites.js'
-import { readAddresses } from '../../utils/accountStorage.js'
+import { useAccountProfile } from '../../hooks/useAccountProfile.js'
+import { apiRequest } from '../../utils/api.js'
 import styles from './Profile.module.css'
-import { initialProfile } from './profileData.js'
 
-const sampleOrders = [
-  {
-    id: 'TBJ-PAT-8KX92P',
-    createdAt: '2026-11-17T14:30:00+01:00',
-    subtotal: 14000,
-    deliveryFee: 1000,
-    total: 15000,
-    status: 'delivered',
-    items: [
-      { id: 'profile-jollof', name: 'Jollof Rice with Chicken', image: jollof, price: 7500, quantity: 1 },
-      { id: 'profile-grilled-chicken', name: 'Grilled Chicken', image: grilledChicken, price: 6500, quantity: 1 },
-    ],
-  },
-  {
-    id: 'TBJ-PAT-7FQ3MV',
-    createdAt: '2026-11-12T13:15:00+01:00',
-    subtotal: 11000,
-    deliveryFee: 1000,
-    total: 12000,
-    status: 'approved',
-    items: [{ id: 'profile-noodles', name: 'Noodles', image: noodles, price: 11000, quantity: 1 }],
-  },
-  {
-    id: 'TBJ-PAT-6D9KQZ',
-    createdAt: '2026-11-05T11:20:00+01:00',
-    subtotal: 17500,
-    deliveryFee: 1000,
-    total: 18500,
-    status: 'pending',
-    items: [
-      { id: 'profile-rice', name: 'Jollof Rice with Chicken', image: jollof, price: 9500, quantity: 1 },
-      { id: 'profile-noodles-side', name: 'Noodles', image: noodles, price: 8000, quantity: 1 },
-    ],
-  },
-]
+const ordersPerPage = 100
+
+async function fetchOrders() {
+  const orders = []
+  let offset = 0
+
+  while (true) {
+    const response = await apiRequest(`/orders?limit=${ordersPerPage}&offset=${offset}`)
+    if (!Array.isArray(response.data)) throw new TypeError('The orders response must contain an array.')
+    orders.push(...response.data)
+    if (response.data.length < ordersPerPage) return orders
+    offset += ordersPerPage
+  }
+}
 
 function ProfileIcon({ name }) {
   const paths = {
@@ -89,8 +64,11 @@ function formatDate(date) {
 function statusLabel(status) {
   const labels = {
     pending: 'Pending',
+    confirmed: 'Preparing',
     approved: 'Preparing',
     preparing: 'Preparing',
+    ready_for_pickup: 'Preparing',
+    on_the_way: 'On The Way',
     'on the way': 'On The Way',
     delivered: 'Delivered',
     cancelled: 'Cancelled',
@@ -99,24 +77,44 @@ function statusLabel(status) {
 }
 
 function CustomerProfile() {
-  const { orders } = useOrder()
   const { favorites } = useFavorites()
-  const { state } = useLocation()
-  const [profile] = useState(state?.profile || initialProfile)
-  const [addresses] = useState(() => readAddresses(profile))
+  const { profile } = useAccountProfile()
+  const [orders, setOrders] = useState([])
+  const [addresses, setAddresses] = useState([])
+  const [dataLoading, setDataLoading] = useState(true)
+  const [dataError, setDataError] = useState('')
 
-  const recentOrders = useMemo(() => {
-    if (orders.length === 0) return sampleOrders
-    return [...orders]
-      .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt))
-      .slice(0, 3)
-  }, [orders])
+  useEffect(() => {
+    let active = true
 
-  const orderCount = orders.length || 5
-  const totalSpent = orders.length
-    ? orders.reduce((total, order) => total + (order.total || 0), 0)
-    : 42500
-  const defaultAddress = addresses.find((address) => address.isDefault) || addresses[0]
+    Promise.all([
+      fetchOrders(),
+      apiRequest('/addresses').then((response) => {
+        if (!Array.isArray(response.data)) throw new TypeError('The addresses response must contain an array.')
+        return response.data
+      }),
+    ])
+      .then(([savedOrders, savedAddresses]) => {
+        if (!active) return
+        setOrders(savedOrders)
+        setAddresses(savedAddresses)
+      })
+      .catch((error) => {
+        if (active) setDataError(error.message || 'Unable to load your account summary.')
+      })
+      .finally(() => {
+        if (active) setDataLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const recentOrders = orders.slice(0, 3)
+  const orderCount = orders.length
+  const totalSpent = orders.reduce((total, order) => total + Number(order.total_minor || 0) / 100, 0)
+  const defaultAddress = addresses.find((address) => address.is_default) || addresses[0]
 
   return (
     <main className={styles.page}>
@@ -157,7 +155,7 @@ function CustomerProfile() {
                 </div>
                 <div className={styles.profileMeta}>
                   <span><ProfileIcon name="calendar" /><span>Member Since<strong>{profile.memberSince}</strong></span></span>
-                  <span id="addresses"><ProfileIcon name="pin" /><span>Default Address<strong>{defaultAddress ? `${defaultAddress.city}, ${defaultAddress.state}` : 'Add an address'}</strong></span></span>
+                  <span id="addresses"><ProfileIcon name="pin" /><span>Default Address<strong>{defaultAddress ? `${defaultAddress.city}, ${defaultAddress.region}` : 'Add an address'}</strong></span></span>
                   <span className={styles.activeBadge}><span />Active</span>
                 </div>
               </div>
@@ -167,7 +165,7 @@ function CustomerProfile() {
           <section className={styles.metrics} aria-label="Account summary">
             <article className={styles.metricCard}>
               <span className={`${styles.metricIcon} ${styles.orange}`}><ProfileIcon name="cart" /></span>
-              <strong>{orderCount}</strong><span>Total Orders</span>
+              <strong>{dataLoading ? '…' : dataError ? '—' : orderCount}</strong><span>Total Orders</span>
             </article>
             <article className={styles.metricCard}>
               <span className={`${styles.metricIcon} ${styles.pink}`}><ProfileIcon name="heart" /></span>
@@ -175,11 +173,11 @@ function CustomerProfile() {
             </article>
             <article className={styles.metricCard}>
               <span className={`${styles.metricIcon} ${styles.orange}`}><ProfileIcon name="wallet" /></span>
-              <strong>{formatAmount(totalSpent)}</strong><span>Total Spent</span>
+              <strong>{dataLoading ? '…' : dataError ? '—' : formatAmount(totalSpent)}</strong><span>Total Spent</span>
             </article>
             <article className={styles.metricCard}>
               <span className={`${styles.metricIcon} ${styles.orange}`}><ProfileIcon name="star" /></span>
-              <strong>4.8</strong><span>Customer Rating</span>
+              <strong>—</strong><span>Customer Rating</span>
             </article>
           </section>
 
@@ -192,15 +190,20 @@ function CustomerProfile() {
               <table className={styles.ordersTable}>
                 <thead><tr><th scope="col">Order ID</th><th scope="col">Date</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
                 <tbody>
+                  {dataLoading && <tr><td colSpan="5" role="status">Loading your orders…</td></tr>}
+                  {!dataLoading && dataError && <tr><td colSpan="5" role="alert">{dataError}</td></tr>}
+                  {!dataLoading && !dataError && recentOrders.length === 0 && (
+                    <tr><td colSpan="5">You have no orders yet.</td></tr>
+                  )}
                   {recentOrders.map((order) => {
                     const label = statusLabel(order.status)
                     return (
                       <tr key={order.id}>
-                        <td>{order.id}</td>
-                        <td>{formatDate(order.createdAt)}</td>
-                        <td>{formatAmount(order.total || 0)}</td>
+                        <td>{order.order_number || order.id}</td>
+                        <td>{formatDate(order.created_at)}</td>
+                        <td>{formatAmount(Number(order.total_minor || 0) / 100)}</td>
                         <td><span className={`${styles.orderStatus} ${styles[`status${label.replaceAll(' ', '')}`]}`}>{label}</span></td>
-                        <td><Link to={`/order/${order.id}`} state={{ order }}>View Details <ProfileIcon name="arrow" /></Link></td>
+                        <td><Link to={`/order/${order.id}`}>View Details <ProfileIcon name="arrow" /></Link></td>
                       </tr>
                     )
                   })}

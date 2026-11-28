@@ -151,6 +151,15 @@
   transition: background-color 150ms ease, color 150ms ease;
 }
 
+.accountNavLogout {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .accountNavLink:hover,
 .accountNavLink:focus-visible {
   background: #fff0e8;

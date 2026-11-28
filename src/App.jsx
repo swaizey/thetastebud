@@ -1,11 +1,13 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import Footer from './components/Footer.jsx'
 import Nav from './components/Nav.jsx'
 import styles from './App.module.css'
 import Home from './pages/Home/Home.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 
 const AdminLayout = lazy(() => import('./pages/Admin/AdminLayout.jsx'))
+const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin.jsx'))
 const AdminDashboard = lazy(() => import('./pages/Admin/AdminDashboard.jsx'))
 const AdminMenu = lazy(() => import('./pages/Admin/AdminMenu.jsx'))
 const AdminOrders = lazy(() => import('./pages/Admin/AdminOrders.jsx'))
@@ -28,6 +30,22 @@ const UserAddresses = lazy(() => import('./pages/Profile/UserAddresses.jsx'))
 const Inbox = lazy(() => import('./pages/Messages/Inbox.jsx'))
 const Chat = lazy(() => import('./pages/Messages/Chat.jsx'))
 const ComingSoon = lazy(() => import('./pages/ComingSoon/ComingSoon.jsx'))
+const Login = lazy(() => import('./pages/Login/Login.jsx'))
+const Register = lazy(() => import('./pages/Register/Register.jsx'))
+
+function RequireAuth({ children, adminOnly = false }) {
+  const { user, loading } = useAuth()
+  const location = useLocation()
+
+  if (loading) return <div className={styles.routeLoading} role="status">Checking your session…</div>
+  const isAdmin = user?.roles?.some((role) => role === 'admin' || role === 'super_admin')
+  if (adminOnly && !user) {
+    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />
+  }
+  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />
+  if (adminOnly && !isAdmin) return <Navigate to="/" replace />
+  return children
+}
 
 function PublicChatLink() {
   const [isVisible, setIsVisible] = useState(false)
@@ -71,14 +89,17 @@ function PublicChatLink() {
 
 function App() {
   const { pathname } = useLocation()
-  const isAdminPage = pathname.startsWith('/admin')
+  const isStandalonePage = pathname.startsWith('/admin') || pathname === '/login' || pathname === '/register'
 
   return (
     <>
-      {!isAdminPage && <Nav />}
+      {!isStandalonePage && <Nav />}
       <Suspense fallback={<div className={styles.routeLoading} role="status">Loading page…</div>}>
         <Routes>
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<RequireAuth adminOnly><AdminLayout /></RequireAuth>}>
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="users/:userId" element={<AdminUserProfile />} />
@@ -89,26 +110,29 @@ function App() {
             <Route path="menu" element={<AdminMenu />} />
             <Route path="sales" element={<AdminSales />} />
           </Route>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Menu />} />
+          <Route path="/menu" element={<Menu />} />
           <Route path="/about" element={<About />} />
           <Route path="/catering" element={<Catering />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/menu" element={<Menu />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/order" element={<Order />} />
           <Route path="/order/:orderId" element={<OrderDetails />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
-          <Route path="/profile/favorites" element={<UserFavorites />} />
-          <Route path="/profile/addresses" element={<UserAddresses />} />
+          <Route path="/profile" element={<RequireAuth><Outlet /></RequireAuth>}>
+            <Route index element={<UserProfile />} />
+            <Route path="edit" element={<EditProfile />} />
+            <Route path="favorites" element={<UserFavorites />} />
+            <Route path="addresses" element={<UserAddresses />} />
+          </Route>
           <Route path="/messages" element={<Inbox />} />
           <Route path="/messages/:conversationId" element={<Chat />} />
           <Route path="/coming-soon" element={<ComingSoon />} />
         </Routes>
       </Suspense>
-      {!isAdminPage && <Footer />}
-      {!isAdminPage && <PublicChatLink />}
+      {!isStandalonePage && <Footer />}
+      {!isStandalonePage && <PublicChatLink />}
     </>
   )
 }

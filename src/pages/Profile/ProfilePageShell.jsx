@@ -1,12 +1,10 @@
-import { useLocation } from 'react-router-dom'
 import heroFood from '../../assets/partyjollof.png'
 import AccountSidebar from './AccountSidebar.jsx'
 import styles from './Profile.module.css'
-import { initialProfile } from './profileData.js'
+import { useAccountProfile } from '../../hooks/useAccountProfile.js'
 
 function ProfilePageShell({ active, title, description, children }) {
-  const { state } = useLocation()
-  const profile = state?.profile || initialProfile
+  const { profile } = useAccountProfile()
   const [firstWord, ...titleWords] = title.split(' ')
 
   return (

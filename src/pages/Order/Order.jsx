@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useOrder } from '../../context/useOrder'
+import { useAuth } from '../../context/AuthContext.jsx'
+import { apiRequest } from '../../utils/api.js'
 import styles from './Order.module.css'
 import orderHero from '../../assets/orderhero.png'
 import {
@@ -18,6 +20,19 @@ const tabs = [
 ]
 
 const money = (amount) => `₦${amount.toLocaleString('en-NG')}`
+
+function splitFullName(fullName = '') {
+  const [firstName = '', ...lastNameParts] = fullName.trim().split(/\s+/).filter(Boolean)
+  return { firstName, lastName: lastNameParts.join(' ') }
+}
+
+function normalizePhone(phone = '') {
+  return phone.replace(/[^\d+]/g, '')
+}
+
+function isValidPhone(phone = '') {
+  return /^\+?[1-9]\d{7,14}$/.test(normalizePhone(phone))
+}
 
 function TabIcon({ name }) {
   const paths = {
@@ -130,14 +145,33 @@ function OrderCard({ order }) {
 function Order() {
   const [cart, setCart] = useState(readCart)
   const { orders, setOrders } = useOrder()
+  const { user, loading: authLoading, refreshUser } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('cart')
   const [selectedOrderId, setSelectedOrderId] = useState(null)
   const [customerEmail, setCustomerEmail] = useState('')
   const [checkoutError, setCheckoutError] = useState('')
+  const [checkoutNotice, setCheckoutNotice] = useState('')
+  const [checkoutPending, setCheckoutPending] = useState(false)
+  const [pendingCheckoutId, setPendingCheckoutId] = useState('')
+  const [profileDraft, setProfileDraft] = useState(null)
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
   const deliveryFee = cart.length > 0 ? 1000 : 0
   const total = subtotal + deliveryFee
+  const nameParts = splitFullName(user?.fullName)
+  const requiresName = !nameParts.firstName || !nameParts.lastName
+  const requiresPhone = !isValidPhone(user?.phone || '')
+  const requiresProfileUpdate = Boolean(user && (requiresName || requiresPhone))
+  const currentProfileDraft = profileDraft?.userId === user?.id
+    ? profileDraft
+    : {
+      userId: user?.id,
+      firstName: nameParts.firstName,
+      lastName: nameParts.lastName,
+      phone: user?.phone || '',
+    }
   const selectedOrder =
     orders.find((order) => order.id === selectedOrderId) ||
     orders.find((order) => order.status === 'pending')
@@ -160,31 +194,146 @@ function Order() {
     updateCart(cart.filter((item) => item.id !== itemId))
   }
 
-  const placeOrder = (event) => {
+  const updateProfileDraft = (field, value) => {
+    setProfileDraft({ ...currentProfileDraft, [field]: value })
+    setCheckoutError('')
+  }
+
+  const placeOrder = async (event) => {
     event.preventDefault()
-    const email = customerEmail.trim()
     if (cart.length === 0) return
+    if (!user) {
+      navigate('/login', { state: { from: location.pathname, checkout: true } })
+      return
+    }
+
+    const email = (customerEmail || user.email).trim()
     if (!email || email.length > 254) {
       setCheckoutError('Enter a valid email address to continue.')
       return
     }
 
-    const order = {
-      id: createOrderId(email),
-      createdAt: new Date().toISOString(),
-      items: cart,
-      subtotal,
-      deliveryFee,
-      total,
-      status: 'pending',
-    }
-    const nextOrders = [order, ...orders]
+    const firstName = requiresName
+      ? currentProfileDraft.firstName.trim()
+      : nameParts.firstName
+    const lastName = requiresName
+      ? currentProfileDraft.lastName.trim()
+      : nameParts.lastName
+    const phone = requiresPhone
+      ? normalizePhone(currentProfileDraft.phone)
+      : normalizePhone(user.phone)
 
-    saveCart([])
-    setOrders(nextOrders)
-    setCart([])
-    setSelectedOrderId(order.id)
-    setActiveTab('payment')
+    if (requiresName && (!firstName || !lastName || `${firstName} ${lastName}`.length > 120)) {
+      setCheckoutError('Enter both your first and last name to continue.')
+      return
+    }
+    if (!isValidPhone(phone)) {
+      setCheckoutError('Enter a valid phone number in international format.')
+      return
+    }
+
+    setCheckoutPending(true)
+    setCheckoutError('')
+    setCheckoutNotice('')
+
+    try {
+      let checkoutUser = user
+      if (requiresProfileUpdate) {
+        await apiRequest('/users/me', {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...(requiresName ? { fullName: `${firstName} ${lastName}` } : {}),
+            ...(requiresPhone ? { phone } : {}),
+          }),
+        })
+        checkoutUser = await refreshUser()
+        if (!checkoutUser) throw new Error('Your profile could not be refreshed. Sign in and try again.')
+      }
+
+      const orderId = pendingCheckoutId || createOrderId(email)
+      if (!pendingCheckoutId) setPendingCheckoutId(orderId)
+      const response = await apiRequest('/checkout-orders', {
+        method: 'POST',
+        body: JSON.stringify({
+          orderId,
+          items: cart.map((item) => ({
+            menuItemId: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+      const savedOrder = response.data
+      const cartItemsById = new Map(cart.map((item) => [item.id, item]))
+      const savedItems = savedOrder.items.map((item) => {
+        const cartItem = cartItemsById.get(item.menuItemId)
+        if (!cartItem) throw new Error('The saved order contains an unexpected meal. Please contact support.')
+        return {
+          ...cartItem,
+          name: item.name,
+          price: item.unitPriceMinor / 100,
+          quantity: item.quantity,
+        }
+      })
+      const order = {
+        id: savedOrder.id,
+        createdAt: savedOrder.createdAt,
+        items: savedItems,
+        subtotal: savedOrder.subtotalMinor / 100,
+        deliveryFee: savedOrder.deliveryFeeMinor / 100,
+        total: savedOrder.totalMinor / 100,
+        status: 'pending',
+        customerName: checkoutUser.fullName,
+        customerEmail: checkoutUser.email,
+        customerPhone: checkoutUser.phone,
+        whatsappStatus: savedOrder.whatsappStatus,
+      }
+
+      saveCart([])
+      setOrders([order, ...orders])
+      setCart([])
+      setSelectedOrderId(order.id)
+      setActiveTab('payment')
+      setPendingCheckoutId('')
+      if (savedOrder.whatsappStatus === 'failed') {
+        setCheckoutNotice(savedOrder.notificationMessage)
+      }
+    } catch (error) {
+      setCheckoutError(error.message || 'Unable to place your order. Please try again.')
+    } finally {
+      setCheckoutPending(false)
+    }
+  }
+
+  const retryWhatsAppNotification = async () => {
+    if (!selectedOrder) return
+
+    setCheckoutPending(true)
+    setCheckoutNotice('')
+    try {
+      const response = await apiRequest('/checkout-orders', {
+        method: 'POST',
+        body: JSON.stringify({
+          orderId: selectedOrder.id,
+          items: selectedOrder.items.map((item) => ({
+            menuItemId: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+      const savedOrder = response.data
+      setOrders((currentOrders) => currentOrders.map((order) => (
+        order.id === savedOrder.id
+          ? { ...order, whatsappStatus: savedOrder.whatsappStatus }
+          : order
+      )))
+      setCheckoutNotice(savedOrder.whatsappStatus === 'sent'
+        ? 'The admin WhatsApp account was notified.'
+        : savedOrder.notificationMessage)
+    } catch (error) {
+      setCheckoutNotice(error.message || 'Unable to retry the WhatsApp notification.')
+    } finally {
+      setCheckoutPending(false)
+    }
   }
 
   const heroCopy = {
@@ -296,18 +445,68 @@ function Order() {
                     autoComplete="email"
                     maxLength={254}
                     placeholder="you@example.com"
-                    required
-                    value={customerEmail}
+                    required={Boolean(user)}
+                    disabled={!user}
+                    value={customerEmail || user?.email || ''}
                     onChange={(event) => {
                       setCustomerEmail(event.target.value)
                       setCheckoutError('')
                     }}
                   />
-                  <small>Your code uses the first 3 letters before @.</small>
+                  <small>{user ? 'Your code uses the first 3 letters before @.' : 'Sign in to continue to checkout.'}</small>
                 </label>
+                {requiresProfileUpdate && (
+                  <fieldset className={styles.profilePrompt}>
+                    <legend>Complete your profile before checkout</legend>
+                    <p>These details are saved to your account and included with your order.</p>
+                    <div className={styles.profilePromptFields}>
+                      {requiresName && (
+                        <>
+                          <label>
+                            <span>First name <span className={styles.requiredBadge}>Required</span></span>
+                            <input
+                              autoComplete="given-name"
+                              maxLength={60}
+                              name="firstName"
+                              required
+                              value={currentProfileDraft.firstName}
+                              onChange={(event) => updateProfileDraft('firstName', event.target.value)}
+                            />
+                          </label>
+                          <label>
+                            <span>Last name <span className={styles.requiredBadge}>Required</span></span>
+                            <input
+                              autoComplete="family-name"
+                              maxLength={60}
+                              name="lastName"
+                              required
+                              value={currentProfileDraft.lastName}
+                              onChange={(event) => updateProfileDraft('lastName', event.target.value)}
+                            />
+                          </label>
+                        </>
+                      )}
+                      {requiresPhone && (
+                        <label>
+                          <span>Phone number <span className={styles.requiredBadge}>Required</span></span>
+                          <input
+                            autoComplete="tel"
+                            inputMode="tel"
+                            maxLength={24}
+                            name="phone"
+                            required
+                            type="tel"
+                            value={currentProfileDraft.phone}
+                            onChange={(event) => updateProfileDraft('phone', event.target.value)}
+                          />
+                        </label>
+                      )}
+                    </div>
+                  </fieldset>
+                )}
                 {checkoutError && <p className={styles.checkoutError} role="alert">{checkoutError}</p>}
-                <button className={styles.checkoutButton} type="submit">
-                  <TabIcon name="card" /> Proceed to Checkout <span aria-hidden="true">→</span>
+                <button className={styles.checkoutButton} type="submit" disabled={authLoading || checkoutPending}>
+                  <TabIcon name="card" /> {authLoading ? 'Checking sign-in…' : checkoutPending ? 'Saving your order…' : 'Proceed to Checkout'} <span aria-hidden="true">→</span>
                 </button>
               </form>
 
@@ -361,6 +560,26 @@ function Order() {
         {activeTab === 'payment' && (
           selectedOrder ? (
             <section className={styles.paymentView} aria-label="Payment instructions">
+              {checkoutNotice && (
+                <p
+                  className={selectedOrder.whatsappStatus === 'failed'
+                    ? styles.checkoutWarning
+                    : styles.checkoutSuccess}
+                  role="status"
+                >
+                  {checkoutNotice}
+                </p>
+              )}
+              {selectedOrder.whatsappStatus === 'failed' && (
+                <button
+                  className={styles.retryNotification}
+                  type="button"
+                  disabled={checkoutPending}
+                  onClick={retryWhatsAppNotification}
+                >
+                  {checkoutPending ? 'Retrying notification…' : 'Retry admin notification'}
+                </button>
+              )}
               <article className={styles.paymentOrder}>
                 <img src={selectedOrder.items[0].image} alt={selectedOrder.items[0].name} />
                 <div className={styles.paymentOrderInfo}>

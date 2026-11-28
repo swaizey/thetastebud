@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
-import { useLocation } from 'react-router-dom'
-import { initialProfile } from './profileData.js'
+import { useAccountProfile } from '../../hooks/useAccountProfile.js'
 import ProfilePageShell from './ProfilePageShell.jsx'
 import { createDefaultAddress, readAddresses, saveAddresses } from '../../utils/accountStorage.js'
 import styles from './UserAddresses.module.css'
@@ -28,9 +27,8 @@ const states = [
 ]
 
 function UserAddresses() {
-  const { state } = useLocation()
-  const profile = state?.profile || initialProfile
-  const [addresses, setAddresses] = useState(() => readAddresses(profile))
+  const { profile } = useAccountProfile()
+  const [addresses, setAddresses] = useState(() => readAddresses())
   const [draft, setDraft] = useState(emptyAddress)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [formError, setFormError] = useState('')

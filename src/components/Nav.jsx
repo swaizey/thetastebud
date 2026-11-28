@@ -4,10 +4,11 @@ import logo from '../assets/logo.png'
 import menuFood from '../assets/partyjollof.png'
 import { CART_CHANGE_EVENT, readCart } from '../utils/orderStorage'
 import styles from './components.module.css'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const links = [
-  { label: 'Home', to: '/' },
-  { label: 'Menu', to: '/menu' },
+  { label: 'Home', to: '/home' },
+  { label: 'Menu', to: '/' },
   { label: 'Catering', to: '/catering' },
   { label: 'Delivery', to: '/delivery' },
   { label: 'About', to: '/about' },
@@ -34,6 +35,7 @@ function NavigationIcon({ label }) {
 }
 
 function Nav() {
+  const { user } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [navHidden, setNavHidden] = useState(false)
   const [navScrolled, setNavScrolled] = useState(window.scrollY > 16)
@@ -191,9 +193,9 @@ function Nav() {
           </Link>
           <NavLink
             className={({ isActive }) => `${styles.profileLink} ${isActive ? styles.profileLinkActive : ''}`}
-            to="/profile"
-            aria-label="My Profile"
-            title="My Profile"
+            to={user ? '/profile' : '/login'}
+            aria-label={user ? 'My Profile' : 'Sign in'}
+            title={user ? 'My Profile' : 'Sign in'}
             onClick={() => setMenuOpen(false)}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">

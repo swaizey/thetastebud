@@ -1,0 +1,37 @@
+.tagline {
+  margin-top: auto;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(3.4rem, 5.8vw, 6.2rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  text-shadow: 0 5px 30px rgb(0 0 0 / 35%);
+}
+
+.tagline span {
+  color: #ff9a72;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.card h1 {
+  margin-bottom: 0.35rem;
+  color: #3b2017;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.2rem, 3.6vw, 3.25rem);
+  line-height: 1;
+  text-align: center;
+}
+
+.loginLink {
+  margin-top: 0.85rem;
+  color: #745f57;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.loginLink a {
+  color: #b64a31;
+  font-weight: 800;
+  text-decoration: none;
+}

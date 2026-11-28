@@ -1,11 +1,19 @@
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useOrder } from '../../context/useOrder'
 import { readCart, saveCart } from '../../utils/orderStorage'
+import { apiRequest } from '../../utils/api.js'
 import styles from './OrderDetails.module.css'
 
 const money = (amount) => `₦${amount.toLocaleString('en-NG')}`
 const steps = ['Order Placed', 'Preparing', 'On The Way', 'Delivered']
-const statusStep = { pending: 0, approved: 1, delivered: 3 }
+const statusStep = { pending: 0, approved: 1, preparing: 1, delivered: 3, 'on the way': 2 }
+const savedStatusLabels = {
+  confirmed: 'approved',
+  preparing: 'preparing',
+  ready_for_pickup: 'preparing',
+  on_the_way: 'on the way',
+}
 
 function OrderIcon({ name }) {
   const paths = {
@@ -31,15 +39,60 @@ function OrderDetails() {
   const { state } = useLocation()
   const navigate = useNavigate()
   const { orders } = useOrder()
-  const order = orders.find((savedOrder) => savedOrder.id === orderId) ||
-    (state?.order?.id === orderId ? state.order : null)
+  const cachedOrder = orders.find((savedOrder) => savedOrder.id === orderId)
+  const stateOrder = state?.order?.id === orderId && Array.isArray(state.order.items) ? state.order : null
+  const [fetchedOrderResult, setFetchedOrderResult] = useState({ orderId: null, order: null, error: '' })
+
+  useEffect(() => {
+    if (cachedOrder || stateOrder) return undefined
+
+    let active = true
+    apiRequest(`/orders/${encodeURIComponent(orderId)}`)
+      .then((response) => {
+        const savedOrder = response.data
+        if (!Array.isArray(savedOrder.items)) throw new TypeError('The order response must contain its items.')
+        if (active) {
+          setFetchedOrderResult({
+            orderId,
+            error: '',
+            order: {
+              id: savedOrder.id,
+              status: savedStatusLabels[savedOrder.status] || savedOrder.status,
+              createdAt: savedOrder.created_at,
+              subtotal: Number(savedOrder.subtotal_minor) / 100,
+              deliveryFee: Number(savedOrder.delivery_fee_minor) / 100,
+              total: Number(savedOrder.total_minor) / 100,
+              items: savedOrder.items.map((item) => ({
+                id: item.menu_item_id || item.id,
+                name: item.item_name,
+                image: item.image_url,
+                price: Number(item.unit_price_minor) / 100,
+                quantity: Number(item.quantity),
+              })),
+            },
+          })
+        }
+      })
+      .catch((error) => {
+        if (active) setFetchedOrderResult({ orderId, order: null, error: error.message || 'Unable to load this order.' })
+      })
+
+    return () => {
+      active = false
+    }
+  }, [cachedOrder, orderId, stateOrder])
+
+  const currentOrderResult = fetchedOrderResult.orderId === orderId ? fetchedOrderResult : null
+  const order = cachedOrder || stateOrder || currentOrderResult?.order
+  const loading = !cachedOrder && !stateOrder && !currentOrderResult
+  const fetchError = currentOrderResult?.error || ''
 
   if (!order) {
     return (
       <main className={styles.page}>
         <section className={styles.notFound}>
-          <h1>Order not found</h1>
-          <p>We couldn’t find this order. It may have been removed from your order history.</p>
+          <h1>{loading ? 'Loading order…' : 'Order not found'}</h1>
+          <p>{loading ? 'Retrieving your order details.' : fetchError || 'We couldn’t find this order. It may have been removed from your order history.'}</p>
           <Link to="/order">Back to Orders</Link>
         </section>
       </main>

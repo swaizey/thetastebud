@@ -116,12 +116,16 @@
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  width: 100%;
   min-height: 42px;
   padding: 0.55rem 0.75rem;
+  border: 0;
   border-top: 1px solid #f3d9cf;
+  background: transparent;
   color: #44272a;
   font-size: 0.8rem;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .logout:hover {

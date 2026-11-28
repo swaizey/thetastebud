@@ -4,14 +4,17 @@ import './index.css'
 import App from './App.jsx'
 import {BrowserRouter} from "react-router-dom";
 import { OrderProvider } from './context/OrderContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <OrderProvider>
-        <App />
-      </OrderProvider>
+      <AuthProvider>
+        <OrderProvider>
+          <App />
+        </OrderProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

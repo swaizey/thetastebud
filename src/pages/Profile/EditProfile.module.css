@@ -351,6 +351,213 @@
   border: 0;
 }
 
+.qualityModalBackdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgb(39 24 19 / 58%);
+  backdrop-filter: blur(5px);
+}
+
+.qualityModal {
+  position: relative;
+  display: flex;
+  width: min(100%, 660px);
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 2.5rem 1.8rem;
+  overflow: hidden;
+  border: 1px solid #f1cbb9;
+  border-radius: 26px;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgb(255 227 211 / 66%), transparent 58%),
+    #fffaf7;
+  box-shadow: 0 24px 70px rgb(34 17 10 / 35%);
+  color: #382025;
+  text-align: center;
+}
+
+.qualityModal::after {
+  position: absolute;
+  z-index: 0;
+  right: -9%;
+  bottom: -34px;
+  left: -9%;
+  height: 58px;
+  border-radius: 50% 50% 0 0;
+  background: rgb(255 183 150 / 24%);
+  content: '';
+  pointer-events: none;
+}
+
+.qualityModal > * {
+  z-index: 1;
+}
+
+.qualityModalClose {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #f1d8cc;
+  border-radius: 50%;
+  background: #fff0e7;
+  color: #713e30;
+  cursor: pointer;
+}
+
+.qualityModalClose .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.qualityArtwork {
+  position: relative;
+  display: grid;
+  width: 142px;
+  height: 124px;
+  place-items: center;
+  margin: 0.2rem 0 0.8rem;
+  border-radius: 48%;
+  background: radial-gradient(circle, #ffe5d7 0 44%, rgb(255 229 215 / 0%) 72%);
+  color: #8d4a36;
+}
+
+.qualityArtwork > svg {
+  width: 124px;
+  height: 108px;
+  fill: #f7c5aa;
+  stroke: #8d4a36;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.qualityArtwork > svg circle {
+  fill: #fff3e9;
+}
+
+.qualityArtwork > svg path {
+  fill: none;
+}
+
+.qualityDownloadBadge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 4px solid #fffaf7;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f9946c, #df5635);
+  color: white;
+  box-shadow: 0 5px 12px rgb(124 55 31 / 21%);
+}
+
+.qualityDownloadBadge svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.qualityModal h2 {
+  margin: 0.2rem 0 0.65rem;
+  color: #382025;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  font-weight: 700;
+}
+
+.qualityModal > p {
+  max-width: 490px;
+  margin: 0;
+  color: #624d4b;
+  font-size: 0.97rem;
+  line-height: 1.65;
+}
+
+.qualitySecurityNote {
+  margin-top: 0.75rem;
+  color: #806b65;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.qualityModalActions {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.55rem;
+}
+
+.qualityModalActions button {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #a8583d;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.25;
+  transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.qualityModalActions button:hover {
+  transform: translateY(-1px);
+}
+
+.qualityModalActions button:focus-visible,
+.qualityModalClose:focus-visible {
+  outline: 3px solid #ed815e;
+  outline-offset: 3px;
+}
+
+.keepOriginalQualityButton {
+  background: #fff8f4;
+  color: #713e30;
+}
+
+.keepOriginalQualityButton:hover {
+  background: #ffede3;
+  box-shadow: 0 4px 12px rgb(126 62 42 / 10%);
+}
+
+.qualityModalActions .reduceQualityButton {
+  border-color: #df5635;
+  background: linear-gradient(105deg, #bf4d2d, #a73720);
+  color: #fffaf7;
+  box-shadow: 0 5px 13px rgb(177 73 43 / 20%);
+}
+
+.reduceQualityButton:hover {
+  background: linear-gradient(105deg, #aa4228, #8f2f1e);
+  box-shadow: 0 7px 16px rgb(177 73 43 / 28%);
+}
+
+.qualityModalActions .icon {
+  width: 17px;
+  height: 17px;
+}
+
 @media (max-width: 900px) {
   .personalSection {
     grid-template-columns: 115px minmax(0, 1fr);
@@ -419,5 +626,47 @@
 @media (max-width: 420px) {
   .fieldsGrid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qualityModalBackdrop {
+    padding: 0.75rem;
+  }
+
+  .qualityModal {
+    padding: 2.4rem 1.15rem 1.35rem;
+    border-radius: 20px;
+  }
+
+  .qualityModalClose {
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 34px;
+    height: 34px;
+  }
+
+  .qualityArtwork {
+    width: 122px;
+    height: 110px;
+    margin-bottom: 0.55rem;
+  }
+
+  .qualityArtwork > svg {
+    width: 108px;
+    height: 96px;
+  }
+
+  .qualityModal > p {
+    font-size: 0.88rem;
+  }
+
+  .qualityModalActions {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.55rem;
+    margin-top: 1.2rem;
+  }
+
+  .qualityModalActions button {
+    min-height: 49px;
+    font-size: 0.82rem;
   }
 }
